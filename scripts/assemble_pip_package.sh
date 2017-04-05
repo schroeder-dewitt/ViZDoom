@@ -11,21 +11,21 @@ if [ $1 -ne 2 ] && [ $1 -ne 3 ];then
     exit 2
 fi
 
-PACKAGE_DEST_DIRECTORY="./bin/python${PYTHON_VERSION}"
+PACKAGE_DEST_DIRECTORY="../bin/python${PYTHON_VERSION}"
 PACKAGE_DEST_PATH="${PACKAGE_DEST_DIRECTORY}/pip_package"
-PACKAGE_SOURCE="./src/lib_python/src_python"
+PACKAGE_SOURCE="../src/lib_python/src_python"
 if [ "$(uname)" == "Darwin" ]
 then
-    VIZDOOM_EXEC_PATH="./bin/vizdoom.app/Contents/MacOS/vizdoom"
+    VIZDOOM_EXEC_PATH="../bin/vizdoom.app/Contents/MacOS/vizdoom"
 else
-    VIZDOOM_EXEC_PATH="./bin/vizdoom"
+    VIZDOOM_EXEC_PATH="../bin/vizdoom"
 fi
 
-PK3_PATH="./bin/vizdoom.pk3"
+PK3_PATH="../bin/vizdoom.pk3"
 PYTHON_BIN_PATH="${PACKAGE_DEST_DIRECTORY}/vizdoom.so"
 FREEDOOM_PATH="./bin/freedoom2.wad"
 SCENARIOS_DEST_DIR="${PACKAGE_DEST_PATH}/scenarios"
-SCENARIOS_PATH="./scenarios"
+SCENARIOS_PATH="../scenarios"
 
 rm -rf ${PACKAGE_DEST_PATH}
 cp -r ${PACKAGE_SOURCE} ${PACKAGE_DEST_PATH}

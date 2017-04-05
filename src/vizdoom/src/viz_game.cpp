@@ -269,21 +269,21 @@ void VIZ_GameStateTic(){
     }
 
     //custom stuff begin
-    vizdoomGameVars->WALLS_COUNT = numlines;
+    vizGameStateSM->WALLS_COUNT = numlines;
     for (int i=0; i<numlines; ++i) {
-        vizdoomGameVars->WALLS_POS[i][0][0] = FIXED2FLOAT(lines[i].v1->x);
-        vizdoomGameVars->WALLS_POS[i][0][1] = FIXED2FLOAT(lines[i].v1->y);
-        vizdoomGameVars->WALLS_POS[i][1][0] = FIXED2FLOAT(lines[i].v2->x);
-        vizdoomGameVars->WALLS_POS[i][1][1] = FIXED2FLOAT(lines[i].v2->y);
+        vizGameStateSM->WALLS_POS[i][0][0] = FIXED2FLOAT(lines[i].v1->x);
+        vizGameStateSM->WALLS_POS[i][0][1] = FIXED2FLOAT(lines[i].v1->y);
+        vizGameStateSM->WALLS_POS[i][1][0] = FIXED2FLOAT(lines[i].v2->x);
+        vizGameStateSM->WALLS_POS[i][1][1] = FIXED2FLOAT(lines[i].v2->y);
 
         bool nonBlocking = 0;
         if (lines[i].backsector && lines[i].frontsector) {
             nonBlocking |= lines[i].backsector->floorplane != lines[i].frontsector->floorplane;
             nonBlocking |= lines[i].backsector->ceilingplane != lines[i].frontsector->ceilingplane;
         }
-        vizdoomGameVars->WALLS_NON_BLOCKING[i] = nonBlocking;
+        vizGameStateSM->WALLS_NON_BLOCKING[i] = nonBlocking;
 
-        vizdoomGameVars->WALLS_SEEN[i] = bool(lines[i].flags & ML_MAPPED);
+        vizGameStateSM->WALLS_SEEN[i] = bool(lines[i].flags & ML_MAPPED);
     }
 
     int thingsCount = 0;
@@ -291,22 +291,22 @@ void VIZ_GameStateTic(){
     for (int i=0; i<numsectors; ++i) {
         t = sectors[i].thinglist;
         while(t) {
-            vizdoomGameVars->THINGS_POS[thingsCount][0] = FIXED2FLOAT(t->X());
-            vizdoomGameVars->THINGS_POS[thingsCount][1] = FIXED2FLOAT(t->Y());
+            vizGameStateSM->THINGS_POS[thingsCount][0] = FIXED2FLOAT(t->X());
+            vizGameStateSM->THINGS_POS[thingsCount][1] = FIXED2FLOAT(t->Y());
 
-            vizdoomGameVars->THINGS_ANGLE[thingsCount] = float((double)t->angle / (double)(1u << 31) * (double)180.0);
+            vizGameStateSM->THINGS_ANGLE[thingsCount] = float((double)t->angle / (double)(1u << 31) * (double)180.0);
 
-            vizdoomGameVars->THINGS_TYPE[thingsCount] = t->GetSpecies().GetIndex();
-            strncpy(vizdoomGameVars->THINGS_NAME[thingsCount], t->GetSpecies().GetChars(), VIZDOOM_MAX_THINGS_INFO);
+            vizGameStateSM->THINGS_TYPE[thingsCount] = t->GetSpecies().GetIndex();
+            strncpy(vizGameStateSM->THINGS_NAME[thingsCount], t->GetSpecies().GetChars(), VIZDOOM_MAX_THINGS_INFO);
 
-            vizdoomGameVars->THINGS_VISIBLE[thingsCount] = t->isVisible;
+            vizGameStateSM->THINGS_VISIBLE[thingsCount] = t->isVisible;
             t->isVisible = 0;
 
             ++thingsCount;
             t = t->snext;
         }
     }
-    vizdoomGameVars->THINGS_COUNT = thingsCount;
+    vizGameStateSM->THINGS_COUNT = thingsCount;
     //custom stuff end
 }
 

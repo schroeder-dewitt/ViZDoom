@@ -211,7 +211,7 @@ namespace vizdoom {
         int getHeatMapsChannels();
         int getHeatMapsHeight();
         int getHeatMapsWidth();
-        BufferPtr * const getHeatMaps();
+        uint8_t * const getHeatMaps();
 
         int getWallCount();
         float getWallPosStartX(int wallId);
@@ -383,7 +383,7 @@ namespace vizdoom {
 
         unsigned int heatMapsWidth, heatMapsHeight, heatMapsChannels;
         float scaleX, scaleY, padX, padY;
-        BufferPtr *heatMapsBuffer = NULL;
+        uint8_t *heatMapsBuffer = NULL;
         std::vector<bool> plottedWalls;
 
     };

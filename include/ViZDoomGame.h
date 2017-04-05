@@ -179,7 +179,7 @@ namespace vizdoom {
         int getHeatMapsChannels();
         int getHeatMapsHeight();
         int getHeatMapsWidth();
-        BufferPtr * const getHeatMapsRaw();
+        BufferPtr const getHeatMapsRaw();
 
         int getWallCount();
         float getWallPosStartX(int wallId);

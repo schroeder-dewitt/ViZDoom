@@ -46,6 +46,8 @@ game.set_mode(Mode.SPECTATOR)
 
 game.init()
 
+print("game init!")
+
 episodes = 1
 
 for i in range(episodes):
@@ -56,12 +58,15 @@ for i in range(episodes):
     while not game.is_episode_finished():
         tick += 1
 
+	print("new game episode!")
+
         state = game.get_state()
 
         game.advance_action()
         last_action = game.get_last_action()
         reward = game.get_last_reward()
 
+    print("now retrieving heatmap...")
         heatmap = game.get_heat_maps()
         print(heatmap.shape)
         cv2.imshow('heatmap')

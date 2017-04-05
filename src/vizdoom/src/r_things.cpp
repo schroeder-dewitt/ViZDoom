@@ -997,7 +997,7 @@ void R_ProjectSprite (AActor *thing, int fakeside, F3DFloor *fakefloor, F3DFloor
 	vis->heightsec = heightsec;
 	vis->sector = thing->Sector;
 
-	vis->thing = things;
+	vis->thing = thing;
 	thing->isVisible = 1;
 
 	vis->depth = tz;

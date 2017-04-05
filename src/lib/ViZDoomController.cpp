@@ -138,37 +138,41 @@ namespace vizdoom {
 
     bool DoomController::init() {
 
+        std::cout << "HEP INIT!" << std::endl;
         if (!this->doomRunning) {
 
             try {
                 this->generateInstanceId();
-
+                std::cout << "HEPr INIT!" << std::endl;
                 // Generate Doom process's arguments
                 this->createDoomArgs();
-
+                std::cout << "HEPda INIT!" << std::endl;
                 // Create message queues
+                std::cout << "HEPl INIT!" << this->instanceId << std::endl;
                 this->MQDoom = new MessageQueue(MQ_DOOM_NAME_BASE + this->instanceId);
+                std::cout << "HEPo INIT!" << std::endl;
                 this->MQController = new MessageQueue(MQ_CTR_NAME_BASE + this->instanceId);
-
+                std::cout << "HEPb INIT!" << std::endl;
                 // Signal handle thread
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
                 // Doom thread
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->doomRunning = true;
-
+                std::cout << "HEPa INIT!" << std::endl;
                 // Wait for first message from Doom
                 this->waitForDoomStart();
-
+                std::cout << "HEPz INIT!" << std::endl;
                 // Open shared memory
                 this->SM = new SharedMemory(SM_NAME_BASE + this->instanceId);
-
+                std::cout << "HEP1 INIT!" << std::endl;
                 this->gameState = this->SM->getGameState();
                 this->input = this->SM->getInputState();
                 this->screenBuffer = this->SM->getScreenBuffer();
                 this->depthBuffer = this->SM->getDepthBuffer();
                 this->labelsBuffer = this->SM->getLabelsBuffer();
                 this->automapBuffer = this->SM->getAutomapBuffer();
+                std::cout << "HEP2 INIT!" << std::endl;
 
                 // Check version
                 if (this->gameState->VERSION != VIZDOOM_LIB_VERSION)
@@ -178,6 +182,7 @@ namespace vizdoom {
 
                 this->waitForDoomMapStartTime();
 
+                std::cout << "HEP3 INIT!" << std::endl;
                 // Update state
                 this->MQDoom->send(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
@@ -956,26 +961,26 @@ namespace vizdoom {
 
     // Our custom stuff
 
-    int DoomController::getWallCount() { return this->gameVariables->WALLS_COUNT; }
-    float DoomController::getWallPosStartX(int wallId) { return this->gameVariables->WALLS_POS[wallId][0][0]; }
-    float DoomController::getWallPosStartY(int wallId) { return this->gameVariables->WALLS_POS[wallId][0][1]; }
-    float DoomController::getWallPosEndX(int wallId) { return this->gameVariables->WALLS_POS[wallId][1][0]; }
-    float DoomController::getWallPosEndY(int wallId) { return this->gameVariables->WALLS_POS[wallId][1][1]; }
-    bool DoomController::getWallSeen(int wallId) { return this->gameVariables->WALLS_SEEN[wallId]; }
-    bool DoomController::getWallNonBlocking(int wallId) { return this->gameVariables->WALLS_NON_BLOCKING[wallId]; }
+    int DoomController::getWallCount() { return this->gameState->WALLS_COUNT; }
+    float DoomController::getWallPosStartX(int wallId) { return this->gameState->WALLS_POS[wallId][0][0]; }
+    float DoomController::getWallPosStartY(int wallId) { return this->gameState->WALLS_POS[wallId][0][1]; }
+    float DoomController::getWallPosEndX(int wallId) { return this->gameState->WALLS_POS[wallId][1][0]; }
+    float DoomController::getWallPosEndY(int wallId) { return this->gameState->WALLS_POS[wallId][1][1]; }
+    bool DoomController::getWallSeen(int wallId) { return this->gameState->WALLS_SEEN[wallId]; }
+    bool DoomController::getWallNonBlocking(int wallId) { return this->gameState->WALLS_NON_BLOCKING[wallId]; }
 
-    int DoomController::getThingCount() { return this->gameVariables->THINGS_COUNT; }
-    float DoomController::getThingPosX(int thingId) { return this->gameVariables->THINGS_POS[thingId][0]; }
-    float DoomController::getThingPosY(int thingId) { return this->gameVariables->THINGS_POS[thingId][1]; }
-    float DoomController::getThingAngle(int thingId) { return this->gameVariables->THINGS_ANGLE[thingId]; }
-    int DoomController::getThingType(int thingId) { return this->gameVariables->THINGS_TYPE[thingId]; }
-    char* DoomController::getThingName(int thingId) { return this->gameVariables->THINGS_NAME[thingId]; }
-    bool DoomController::getThingIsVisible(int thingId) { return this->gameVariables->THINGS_VISIBLE[thingId]; }
+    int DoomController::getThingCount() { return this->gameState->THINGS_COUNT; }
+    float DoomController::getThingPosX(int thingId) { return this->gameState->THINGS_POS[thingId][0]; }
+    float DoomController::getThingPosY(int thingId) { return this->gameState->THINGS_POS[thingId][1]; }
+    float DoomController::getThingAngle(int thingId) { return this->gameState->THINGS_ANGLE[thingId]; }
+    int DoomController::getThingType(int thingId) { return this->gameState->THINGS_TYPE[thingId]; }
+    char* DoomController::getThingName(int thingId) { return this->gameState->THINGS_NAME[thingId]; }
+    bool DoomController::getThingIsVisible(int thingId) { return this->gameState->THINGS_VISIBLE[thingId]; }
 
     int DoomController::getHeatMapsChannels() { return this->heatMapsChannels; }
     int DoomController::getHeatMapsHeight() { return this->heatMapsHeight; }
     int DoomController::getHeatMapsWidth() { return this->heatMapsWidth; }
-    BufferPtr * const DoomController::getHeatMaps() {
+    uint8_t * const DoomController::getHeatMaps() {
         if (!this->heatMapsBuffer) {
             // Hard coded sizes for now
             this->heatMapsChannels = 5;
@@ -993,15 +998,15 @@ namespace vizdoom {
             memset(this->heatMapsBuffer, 0, heatMapsSize);
 
             // Initialize seen walls;
-            this->plottedWalls = std::vector<bool>(this->gameVariables->WALLS_COUNT, 0);
+            this->plottedWalls = std::vector<bool>(this->gameState->WALLS_COUNT, 0);
 
             // Initialize scaling/padding factors
             float minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
-            for (int i=0; i<this->gameVariables->WALLS_COUNT; ++i) {
-                minX = std::min(minX, std::min(this->gameVariables->WALLS_POS[i][0][0], this->gameVariables->WALLS_POS[i][1][0]));
-                minY = std::min(minY, std::min(this->gameVariables->WALLS_POS[i][0][1], this->gameVariables->WALLS_POS[i][1][1]));
-                maxX = std::max(maxX, std::max(this->gameVariables->WALLS_POS[i][0][0], this->gameVariables->WALLS_POS[i][1][0]));
-                maxY = std::max(maxY, std::max(this->gameVariables->WALLS_POS[i][0][1], this->gameVariables->WALLS_POS[i][1][1]));
+            for (int i=0; i<this->gameState->WALLS_COUNT; ++i) {
+                minX = std::min(minX, std::min(this->gameState->WALLS_POS[i][0][0], this->gameState->WALLS_POS[i][1][0]));
+                minY = std::min(minY, std::min(this->gameState->WALLS_POS[i][0][1], this->gameState->WALLS_POS[i][1][1]));
+                maxX = std::max(maxX, std::max(this->gameState->WALLS_POS[i][0][0], this->gameState->WALLS_POS[i][1][0]));
+                maxY = std::max(maxY, std::max(this->gameState->WALLS_POS[i][0][1], this->gameState->WALLS_POS[i][1][1]));
             }
             // Keep 4 pixels all around
             this->scaleX = - float(this->heatMapsWidth-4) / float(maxX - minX);
@@ -1015,13 +1020,13 @@ namespace vizdoom {
         // Update current buffer
 
         // Update walls
-        for (int i=0; i<this->gameVariables->WALLS_COUNT; ++i) {
+        for (int i=0; i<this->gameState->WALLS_COUNT; ++i) {
             // Add the missing ones
-            if (!this->gameVariables->WALLS_NON_BLOCKING[i] && this->gameVariables->WALLS_SEEN[i] && !this->plottedWalls[i]) {
-                int fromX = this->gameVariables->WALLS_POS[i][0][0] * this->scaleX + this->padX;
-                int fromY = this->gameVariables->WALLS_POS[i][0][1] * this->scaleY + this->padY;
-                int toX = this->gameVariables->WALLS_POS[i][1][0] * this->scaleX + this->padX;
-                int toY = this->gameVariables->WALLS_POS[i][1][1] * this->scaleY + this->padY;
+            if (!this->gameState->WALLS_NON_BLOCKING[i] && this->gameState->WALLS_SEEN[i] && !this->plottedWalls[i]) {
+                int fromX = this->gameState->WALLS_POS[i][0][0] * this->scaleX + this->padX;
+                int fromY = this->gameState->WALLS_POS[i][0][1] * this->scaleY + this->padY;
+                int toX = this->gameState->WALLS_POS[i][1][0] * this->scaleX + this->padX;
+                int toY = this->gameState->WALLS_POS[i][1][1] * this->scaleY + this->padY;
 
                 float slope;
                 if (toX != fromX) {
@@ -1073,11 +1078,11 @@ namespace vizdoom {
         float playerAngle = 0;
         int playerX, playerY;
         bool found = 0;
-        for(int i=0; i<this->gameVariables->THINGS_COUNT; ++i) {
-            if (this->gameVariables->THINGS_TYPE[i] == 76) {
-                playerX = this->gameVariables->THINGS_POS[i][0] * this->scaleX + this->padX;
-                playerY = this->gameVariables->THINGS_POS[i][1] * this->scaleY + this->padY;
-                playerAngle = this->gameVariables->THINGS_ANGLE[i];
+        for(int i=0; i<this->gameState->THINGS_COUNT; ++i) {
+            if (this->gameState->THINGS_TYPE[i] == 76) {
+                playerX = this->gameState->THINGS_POS[i][0] * this->scaleX + this->padX;
+                playerY = this->gameState->THINGS_POS[i][1] * this->scaleY + this->padY;
+                playerAngle = this->gameState->THINGS_ANGLE[i];
                 found = 1;
                 break;
             }
@@ -1117,11 +1122,11 @@ namespace vizdoom {
         }
 
         // Update the medkits, ammo/weapons and enemies
-        for(int i=0; i<this->gameVariables->THINGS_COUNT; ++i) {
-            if (!this->gameVariables->THINGS_VISIBLE[i]) {
+        for(int i=0; i<this->gameState->THINGS_COUNT; ++i) {
+            if (!this->gameState->THINGS_VISIBLE[i]) {
                 continue;
             }
-            int type = this->gameVariables->THINGS_TYPE[i];
+            int type = this->gameState->THINGS_TYPE[i];
             int mapNb = -1;
             if (type == 2061 or type == 2060 or type == 2062 or type == 2063) {
                 mapNb = 2; // medkits
@@ -1132,8 +1137,8 @@ namespace vizdoom {
             } else {
                 continue;
             }
-            int posX = this->gameVariables->THINGS_POS[i][0] * this->scaleX + this->padX;
-            int posY = this->gameVariables->THINGS_POS[i][1] * this->scaleY + this->padY;
+            int posX = this->gameState->THINGS_POS[i][0] * this->scaleX + this->padX;
+            int posY = this->gameState->THINGS_POS[i][1] * this->scaleY + this->padY;
             for (int x=-1; x < 2; ++x) {
                 for (int y=-1; y < 2; ++y) {
                     this->heatMapsBuffer[mapNb*mapSize + (posY+y)*mapWidth + posX+x] = 255;

@@ -20,6 +20,8 @@
  THE SOFTWARE.
 */
 
+#include <iostream> //just for debugging!
+
 #include "ViZDoomMessageQueue.h"
 #include "ViZDoomExceptions.h"
 
@@ -36,12 +38,16 @@ namespace vizdoom {
     void MessageQueue::init() {
         try {
             bip::message_queue::remove(this->name.c_str());
+            std::cout << "HEM!" << this->name.c_str() << " | " << sizeof(Message) << std::endl;
             this->mq = new bip::message_queue(bip::open_or_create, this->name.c_str(), MQ_MAX_MSG_NUM, sizeof(Message));
+            std::cout << "HEM2!" << std::endl;
         }
         catch(bip::interprocess_exception& ex) {
+            std::cout << "HEM3!" << std::endl;
             throw MessageQueueException(std::string("Failed to create message queues: ") + std::string(ex.what()));
         }
         catch (...) {
+            std::cout << "HEM4!" << std::endl;
             throw MessageQueueException("Failed to create message queues for unknown reason.");
         }
     }
