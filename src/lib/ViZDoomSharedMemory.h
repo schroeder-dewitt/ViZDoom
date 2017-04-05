@@ -74,6 +74,10 @@ namespace vizdoom {
         unsigned int VERSION;
         char VERSION_STR[8];
 
+        #define VIZDOOM_MAX_WALLS 255
+        #define VIZDOOM_MAX_THINGS 1023
+        #define VIZDOOM_MAX_THINGS_INFO 63
+
         // SM
         size_t SM_SIZE;
         size_t SM_REGION_OFFSET[SM_REGION_COUNT];
@@ -155,6 +159,19 @@ namespace vizdoom {
         //LABELS
         unsigned int LABEL_COUNT;
         SMLabel LABEL[MAX_LABELS];
+
+        //Our custom stuff
+        int WALLS_COUNT;
+        float WALLS_POS[VIZDOOM_MAX_WALLS][2][2];
+        bool WALLS_SEEN[VIZDOOM_MAX_WALLS];
+        bool WALLS_NON_BLOCKING[VIZDOOM_MAX_WALLS];
+
+        int THINGS_COUNT;
+        float THINGS_POS[VIZDOOM_MAX_THINGS][2];
+        float THINGS_ANGLE[VIZDOOM_MAX_THINGS];
+        int THINGS_TYPE[VIZDOOM_MAX_THINGS];
+        char THINGS_NAME[VIZDOOM_MAX_THINGS][VIZDOOM_MAX_THINGS_INFO];
+        bool THINGS_VISIBLE[VIZDOOM_MAX_THINGS];
     };
 
     struct SMInputState {

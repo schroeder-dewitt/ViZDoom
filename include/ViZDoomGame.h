@@ -176,6 +176,27 @@ namespace vizdoom {
         size_t getScreenPitch();
         size_t getScreenSize();
 
+        int getHeatMapsChannels();
+        int getHeatMapsHeight();
+        int getHeatMapsWidth();
+        BufferPtr * const getHeatMapsRaw();
+
+        int getWallCount();
+        float getWallPosStartX(int wallId);
+        float getWallPosStartY(int wallId);
+        float getWallPosEndX(int wallId);
+        float getWallPosEndY(int wallId);
+        bool getWallSeen(int wallId);
+        bool getWallNonBlocking(int wallId);
+
+        int getThingCount();
+        float getThingPosX(int thingId);
+        float getThingPosY(int thingId);
+        float getThingAngle(int thingId);
+        int getThingType(int thingId);
+        const std::string getThingName(int thingId);
+        bool getThingIsVisible(int thingId);
+
 
     protected:
 

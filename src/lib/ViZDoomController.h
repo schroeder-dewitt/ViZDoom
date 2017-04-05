@@ -80,6 +80,7 @@ namespace vizdoom {
 
     public:
 
+
         DoomController();
 
         ~DoomController();
@@ -204,6 +205,31 @@ namespace vizdoom {
         SMInputState *const getInput();
 
         SMGameState *const getGameState();
+
+        // Our custom stuff
+
+        int getHeatMapsChannels();
+        int getHeatMapsHeight();
+        int getHeatMapsWidth();
+        BufferPtr * const getHeatMaps();
+
+        int getWallCount();
+        float getWallPosStartX(int wallId);
+        float getWallPosStartY(int wallId);
+        float getWallPosEndX(int wallId);
+        float getWallPosEndY(int wallId);
+        bool getWallSeen(int wallId);
+        bool getWallNonBlocking(int wallId);
+
+        int getThingCount();
+        float getThingPosX(int monsterId);
+        float getThingPosY(int monsterId);
+        float getThingAngle(int thingId);
+        int getThingType(int monsterId);
+        char* getThingName(int monsterId);
+        bool getThingIsVisible(int monsterId);
+
+        // End of our custom stuff
 
         /* Buttons state */
         int getButtonState(Button button);
@@ -354,6 +380,11 @@ namespace vizdoom {
 
         std::vector<std::string> customArgs;
         std::vector<std::string> doomArgs;
+
+        unsigned int heatMapsWidth, heatMapsHeight, heatMapsChannels;
+        float scaleX, scaleY, padX, padY;
+        BufferPtr *heatMapsBuffer = NULL;
+        std::vector<bool> plottedWalls;
 
     };
 

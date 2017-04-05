@@ -224,6 +224,9 @@ namespace vizdoom {
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
             } else this->state->automapBuffer = nullptr;
 
+            /* Update Heat Map (always on, might want TODO flag)*/
+            this->state->heatmaps = this->doomController->getHeatMaps();
+
             /* Update labels */
             this->state->labels.clear();
             for (unsigned int i = 0; i < this->doomController->getGameState()->LABEL_COUNT; ++i) {
@@ -523,6 +526,60 @@ namespace vizdoom {
         ConfigLoader configLoader(this);
         return configLoader.load(filePath);
     }
+
+    // Our custom stuff
+    int DoomGame::getHeatMapsChannels() { return this->doomController->getHeatMapsChannels(); }
+    int DoomGame::getHeatMapsHeight() { return this->doomController->getHeatMapsHeight(); }
+    int DoomGame::getHeatMapsWidth() { return this->doomController->getHeatMapsWidth(); }
+    uint8_t * const DoomGame::getHeatMapsRaw(){
+        return this->state.heatmaps;
+    }
+
+    int DoomGame::getWallCount(){
+        return this->doomController->getWallCount();
+    }
+    float DoomGame::getWallPosStartX(int wallId){
+        return this->doomController->getWallPosStartX(wallId);
+    }
+    float DoomGame::getWallPosStartY(int wallId){
+        return this->doomController->getWallPosStartY(wallId);
+    }
+    float DoomGame::getWallPosEndX(int wallId){
+        return this->doomController->getWallPosEndX(wallId);
+    }
+    float DoomGame::getWallPosEndY(int wallId){
+        return this->doomController->getWallPosEndY(wallId);
+    }
+    bool DoomGame::getWallSeen(int wallId){
+        return this->doomController->getWallSeen(wallId);
+    }
+    bool DoomGame::getWallNonBlocking(int wallId){
+        return this->doomController->getWallNonBlocking(wallId);
+    }
+
+    int DoomGame::getThingCount(){
+        return this->doomController->getThingCount();
+    }
+    float DoomGame::getThingPosX(int thingId){
+        return this->doomController->getThingPosX(thingId);
+    }
+    float DoomGame::getThingPosY(int thingId){
+        return this->doomController->getThingPosY(thingId);
+    }
+    float DoomGame::getThingAngle(int thingId){
+        return this->doomController->getThingAngle(thingId);
+    }
+    int DoomGame::getThingType(int thingId){
+        return this->doomController->getThingType(thingId);
+    }
+    const std::string DoomGame::getThingName(int thingId){
+        return std::string(this->doomController->getThingName(thingId));
+    }
+    bool DoomGame::getThingIsVisible(int thingId){
+        return this->doomController->getThingIsVisible(thingId);
+    }
+
+    // End of custom stuff
 
 }
 

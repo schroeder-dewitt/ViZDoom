@@ -13,6 +13,9 @@ from __future__ import print_function
 from time import sleep
 from vizdoom import *
 
+import cheat
+import cv2
+
 game = DoomGame()
 
 # Choose scenario config file you wish to watch.
@@ -43,18 +46,26 @@ game.set_mode(Mode.SPECTATOR)
 
 game.init()
 
-episodes = 10
+episodes = 1
 
 for i in range(episodes):
     print("Episode #" + str(i + 1))
 
     game.new_episode()
+    tick = 0
     while not game.is_episode_finished():
+        tick += 1
+
         state = game.get_state()
 
         game.advance_action()
         last_action = game.get_last_action()
         reward = game.get_last_reward()
+
+        heatmap = game.get_heat_maps()
+        print(heatmap.shape)
+        cv2.imshow('heatmap')
+        cv2.waitKey(1)
 
         print("State #" + str(state.number))
         print("Game variables: ", state.game_variables)

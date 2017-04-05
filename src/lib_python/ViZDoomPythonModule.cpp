@@ -432,6 +432,27 @@ BOOST_PYTHON_MODULE(vizdoom)
 
         .def("get_game_variable", &DoomGamePython::getGameVariable)
 
+        // Our custom stuff
+        .def("get_heat_maps", &DoomGamePython::getHeatMaps)
+
+        .def("get_wall_count", &DoomGamePython::getWallCount)
+        .def("get_wall_start_pos_x", &DoomGamePython::getWallPosStartX)
+        .def("get_wall_start_pos_y", &DoomGamePython::getWallPosStartY)
+        .def("get_wall_end_pos_x", &DoomGamePython::getWallPosEndX)
+        .def("get_wall_end_pos_y", &DoomGamePython::getWallPosEndY)
+        .def("get_wall_seen", &DoomGamePython::getWallSeen)
+        .def("get_wall_non_blocking", &DoomGamePython::getWallNonBlocking)
+
+        .def("get_thing_count", &DoomGamePython::getThingCount)
+        .def("get_thing_pos_x", &DoomGamePython::getThingPosX)
+        .def("get_thing_pos_y", &DoomGamePython::getThingPosY)
+        .def("get_thing_angle", &DoomGamePython::getThingAngle)
+        .def("get_thing_type", &DoomGamePython::getThingType)
+        .def("get_thing_name", &DoomGamePython::getThingName)
+        .def("get_thing_is_visible", &DoomGamePython::getThingIsVisible)
+
+        // End of custom stuff
+
         .def("get_living_reward", &DoomGamePython::getLivingReward)
         .def("set_living_reward", &DoomGamePython::setLivingReward)
 

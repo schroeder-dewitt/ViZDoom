@@ -953,6 +953,202 @@ namespace vizdoom {
 
     bool DoomController::isPlayerDead() { return this->gameState->PLAYER_DEAD; }
 
+
+    // Our custom stuff
+
+    int DoomController::getWallCount() { return this->gameVariables->WALLS_COUNT; }
+    float DoomController::getWallPosStartX(int wallId) { return this->gameVariables->WALLS_POS[wallId][0][0]; }
+    float DoomController::getWallPosStartY(int wallId) { return this->gameVariables->WALLS_POS[wallId][0][1]; }
+    float DoomController::getWallPosEndX(int wallId) { return this->gameVariables->WALLS_POS[wallId][1][0]; }
+    float DoomController::getWallPosEndY(int wallId) { return this->gameVariables->WALLS_POS[wallId][1][1]; }
+    bool DoomController::getWallSeen(int wallId) { return this->gameVariables->WALLS_SEEN[wallId]; }
+    bool DoomController::getWallNonBlocking(int wallId) { return this->gameVariables->WALLS_NON_BLOCKING[wallId]; }
+
+    int DoomController::getThingCount() { return this->gameVariables->THINGS_COUNT; }
+    float DoomController::getThingPosX(int thingId) { return this->gameVariables->THINGS_POS[thingId][0]; }
+    float DoomController::getThingPosY(int thingId) { return this->gameVariables->THINGS_POS[thingId][1]; }
+    float DoomController::getThingAngle(int thingId) { return this->gameVariables->THINGS_ANGLE[thingId]; }
+    int DoomController::getThingType(int thingId) { return this->gameVariables->THINGS_TYPE[thingId]; }
+    char* DoomController::getThingName(int thingId) { return this->gameVariables->THINGS_NAME[thingId]; }
+    bool DoomController::getThingIsVisible(int thingId) { return this->gameVariables->THINGS_VISIBLE[thingId]; }
+
+    int DoomController::getHeatMapsChannels() { return this->heatMapsChannels; }
+    int DoomController::getHeatMapsHeight() { return this->heatMapsHeight; }
+    int DoomController::getHeatMapsWidth() { return this->heatMapsWidth; }
+    BufferPtr * const DoomController::getHeatMaps() {
+        if (!this->heatMapsBuffer) {
+            // Hard coded sizes for now
+            this->heatMapsChannels = 5;
+            this->heatMapsHeight = 120;
+            this->heatMapsWidth = 120;
+            // 0: walls
+            // 1: player
+            // 2: medkits
+            // 3: ammo/weapons
+            // 4: enemies
+
+            // Initialize map
+            int heatMapsSize = this->heatMapsWidth*this->heatMapsHeight*this->heatMapsChannels;
+            this->heatMapsBuffer = (uint8_t*) malloc(heatMapsSize*sizeof(float));
+            memset(this->heatMapsBuffer, 0, heatMapsSize);
+
+            // Initialize seen walls;
+            this->plottedWalls = std::vector<bool>(this->gameVariables->WALLS_COUNT, 0);
+
+            // Initialize scaling/padding factors
+            float minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+            for (int i=0; i<this->gameVariables->WALLS_COUNT; ++i) {
+                minX = std::min(minX, std::min(this->gameVariables->WALLS_POS[i][0][0], this->gameVariables->WALLS_POS[i][1][0]));
+                minY = std::min(minY, std::min(this->gameVariables->WALLS_POS[i][0][1], this->gameVariables->WALLS_POS[i][1][1]));
+                maxX = std::max(maxX, std::max(this->gameVariables->WALLS_POS[i][0][0], this->gameVariables->WALLS_POS[i][1][0]));
+                maxY = std::max(maxY, std::max(this->gameVariables->WALLS_POS[i][0][1], this->gameVariables->WALLS_POS[i][1][1]));
+            }
+            // Keep 4 pixels all around
+            this->scaleX = - float(this->heatMapsWidth-4) / float(maxX - minX);
+            this->scaleY = float(this->heatMapsHeight-4) / float(maxY - minY);
+            this->padX = -2 - minX * this->scaleX + this->heatMapsWidth;
+            this->padY = 2 - minY * this->scaleY;
+        }
+        int mapSize = this->heatMapsWidth * this->heatMapsHeight;
+        int mapWidth = this->heatMapsWidth;
+
+        // Update current buffer
+
+        // Update walls
+        for (int i=0; i<this->gameVariables->WALLS_COUNT; ++i) {
+            // Add the missing ones
+            if (!this->gameVariables->WALLS_NON_BLOCKING[i] && this->gameVariables->WALLS_SEEN[i] && !this->plottedWalls[i]) {
+                int fromX = this->gameVariables->WALLS_POS[i][0][0] * this->scaleX + this->padX;
+                int fromY = this->gameVariables->WALLS_POS[i][0][1] * this->scaleY + this->padY;
+                int toX = this->gameVariables->WALLS_POS[i][1][0] * this->scaleX + this->padX;
+                int toY = this->gameVariables->WALLS_POS[i][1][1] * this->scaleY + this->padY;
+
+                float slope;
+                if (toX != fromX) {
+                    slope = float(toY - fromY) / float(toX - fromX);
+                    float Y;
+                    int from, to;
+                    if (fromX < toX) {
+                        from = fromX;
+                        to = toX;
+                        Y = float(fromY);
+                    } else {
+                        from = toX;
+                        to = fromX;
+                        Y = float(toY);
+                    }
+                    for (int X = from; X <= to; ++X) {
+                        Y += slope;
+                        Y = std::min(std::max(Y, 0.f), (float)this->heatMapsHeight);
+                        this->heatMapsBuffer[int(Y)*mapWidth + X] = 255;
+                    }
+                }
+                if (toY != fromY) {
+                    slope = float(toX - fromX) / float(toY - fromY);
+                    float X;
+                    int from, to;
+                    if (fromY < toY) {
+                        from = fromY;
+                        to = toY;
+                        X = float(fromX);
+                    } else {
+                        from = toY;
+                        to = fromY;
+                        X = float(toX);
+                    }
+                    for (int Y = from; Y <= to; ++Y) {
+                        X += slope;
+                        X = std::min(std::max(X, 0.f), (float)this->heatMapsWidth);
+                        this->heatMapsBuffer[Y*mapWidth + int(X)] = 255;
+                    }
+                }
+                this->plottedWalls[i] = 1;
+            }
+        }
+
+        // Set everything else to black
+        memset(this->heatMapsBuffer+mapSize, 0, 4*mapSize);
+
+        // Update the player
+        float playerAngle = 0;
+        int playerX, playerY;
+        bool found = 0;
+        for(int i=0; i<this->gameVariables->THINGS_COUNT; ++i) {
+            if (this->gameVariables->THINGS_TYPE[i] == 76) {
+                playerX = this->gameVariables->THINGS_POS[i][0] * this->scaleX + this->padX;
+                playerY = this->gameVariables->THINGS_POS[i][1] * this->scaleY + this->padY;
+                playerAngle = this->gameVariables->THINGS_ANGLE[i];
+                found = 1;
+                break;
+            }
+        }
+        if (found) {
+            int centerValue = 255;
+            int arrowValue = 125;
+            this->heatMapsBuffer[mapSize + playerY*mapWidth + playerX] = centerValue;
+            playerAngle = int(360 - playerAngle + 180) % 360;
+            if (playerAngle < 22.5) {
+                this->heatMapsBuffer[mapSize + (playerY+0)*mapWidth + playerX+1] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY+0)*mapWidth + playerX+2] = arrowValue;
+            } else if (playerAngle < 67.5) {
+                this->heatMapsBuffer[mapSize + (playerY+1)*mapWidth + playerX+1] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY+2)*mapWidth + playerX+2] = arrowValue;
+            } else if (playerAngle < 112.5) {
+                this->heatMapsBuffer[mapSize + (playerY+1)*mapWidth + playerX+0] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY+2)*mapWidth + playerX+0] = arrowValue;
+            } else if (playerAngle < 157.5) {
+                this->heatMapsBuffer[mapSize + (playerY+1)*mapWidth + playerX-1] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY+2)*mapWidth + playerX-2] = arrowValue;
+            } else if (playerAngle < 202.5) {
+                this->heatMapsBuffer[mapSize + (playerY+0)*mapWidth + playerX-1] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY+0)*mapWidth + playerX-2] = arrowValue;
+            } else if (playerAngle < 247.5) {
+                this->heatMapsBuffer[mapSize + (playerY-1)*mapWidth + playerX-1] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY-2)*mapWidth + playerX-2] = arrowValue;
+            } else if (playerAngle < 292.5) {
+                this->heatMapsBuffer[mapSize + (playerY-1)*mapWidth + playerX+0] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY-2)*mapWidth + playerX+0] = arrowValue;
+            } else if (playerAngle < 337.5) {
+                this->heatMapsBuffer[mapSize + (playerY-1)*mapWidth + playerX+1] = arrowValue;
+                this->heatMapsBuffer[mapSize + (playerY-2)*mapWidth + playerX+2] = arrowValue;
+            }
+        } else {
+            printf("WARNING: Player not found on the map\n");
+        }
+
+        // Update the medkits, ammo/weapons and enemies
+        for(int i=0; i<this->gameVariables->THINGS_COUNT; ++i) {
+            if (!this->gameVariables->THINGS_VISIBLE[i]) {
+                continue;
+            }
+            int type = this->gameVariables->THINGS_TYPE[i];
+            int mapNb = -1;
+            if (type == 2061 or type == 2060 or type == 2062 or type == 2063) {
+                mapNb = 2; // medkits
+            } else if (type == 2076 or type == 2077 or type == 2075 or type == 1992 or type == 174 or type == 2057 or type == 2050 or type == 2058 or type == 178) {
+                mapNb = 3; // ammo/weapons
+            } else if (type == 1974 or type == 1976 or type == 1975 or type == 1433 or type == 67 or type == 1978 or type == 1977 or type == 1980) {
+                mapNb = 4; // enemies
+            } else {
+                continue;
+            }
+            int posX = this->gameVariables->THINGS_POS[i][0] * this->scaleX + this->padX;
+            int posY = this->gameVariables->THINGS_POS[i][1] * this->scaleY + this->padY;
+            for (int x=-1; x < 2; ++x) {
+                for (int y=-1; y < 2; ++y) {
+                    this->heatMapsBuffer[mapNb*mapSize + (posY+y)*mapWidth + posX+x] = 255;
+                }
+            }
+        }
+
+        return this->heatMapsBuffer;
+    }
+
+    // End of our custom stuff
+
+
+
+
     /* Protected and private functions */
     /*----------------------------------------------------------------------------------------------------------------*/
 

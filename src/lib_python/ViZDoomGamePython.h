@@ -101,6 +101,8 @@ namespace vizdoom {
         void addGameArgs(bpy::str const &pyArgs);
         void sendGameCommand(bpy::str const &pyCmd);
 
+        PyObject* getHeatMaps();
+
     private:
         GameStatePython* pyState;
 
