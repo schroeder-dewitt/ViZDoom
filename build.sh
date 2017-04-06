@@ -9,4 +9,4 @@ rm -f ../error.log && rm -f ../build.log && make -j12 #2> ../error.log > ../buil
 # echo "export PYTHONPATH=`pwd`/bin/python3/pip_package:$PYTHONPATH" >> /root/.bashrc
 # export PYTHONPATH=`pwd`/../bin/python3/pip_package:$PYTHONPATH
 #source /root/.bashrc
-ln ../bin/vizdoom ../bin/python3/pip_package/vizdoom
+#ln ../bin/vizdoom ../bin/python3/pip_package/vizdoom
