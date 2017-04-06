@@ -4,7 +4,7 @@
 # This script presents SPECTATOR mode. In SPECTATOR mode you play and
 # your agent can learn from it.
 # Configuration is loaded from "../../scenarios/<SCENARIO_NAME>.cfg" file.
-# 
+#
 # To see the scenario description go to "../../scenarios/README.md"
 #####################################################################
 
@@ -13,10 +13,10 @@ from __future__ import print_function
 from time import sleep
 from vizdoom import *
 
-import cheat
+import numpy as np
 import cv2
 
-import numpy as np
+import cheat
 
 game = DoomGame()
 
@@ -24,7 +24,7 @@ game = DoomGame()
 # Don't load two configs cause the second will overrite the first one.
 # Multiple config files are ok but combining these ones doesn't make much sense.
 
-#game.load_config("../../scenarios/basic.cfg")
+# game.load_config("../../scenarios/basic.cfg")
 # game.load_config("../../scenarios/simpler_basic.cfg")
 # game.load_config("../../scenarios/rocket_basic.cfg")
 # game.load_config("../../scenarios/deadly_corridor.cfg")
@@ -48,57 +48,40 @@ game.set_mode(Mode.SPECTATOR)
 
 game.init()
 
-print("game init!")
-
-#input("Press Enter to continue...")
-
-episodes = 1
+episodes = 10
 
 for i in range(episodes):
-
     print("Episode #" + str(i + 1))
 
     game.new_episode()
-    #input("Press Enter aftnewepi to continue...")
-    tick = 0
-    #while not game.is_episode_finished():
-    #    tick += 1
+    while not game.is_episode_finished():
+        state = game.get_state()
 
-    print("new game episode!")
+        game.advance_action()
+        last_action = game.get_last_action()
+        reward = game.get_last_reward()
 
-    #input("Press Enter befgetstate to continue...")
-    state = game.get_state()
+        print("now retrieving heatmap...")
+        heatmap = game.get_heat_maps()
+        h = np.swapaxes(heatmap, 0, 2)
+        print(h.shape)
+        #print(h)
+        cv2.imshow('heatmap1', np.hstack([h[:,:,i] for i in range(5)]))
+        cv2.waitKey(1)
+        #input("Press Enter heat to continue...")
 
-    #input("Press Enter befadvac to continue...")
-    game.advance_action()
-    #input("Press Enter afteradvac to continue...")
-    last_action = game.get_last_action()
-    reward = game.get_last_reward()
+        #cheat.plot_map(game,True,True)
+        #input("Press Enter heat to continue...")
 
-    #input("Press Enter befheat to continue...")
-    print("now retrieving heatmap...")
-    heatmap = game.get_heat_maps()
-    h = np.swapaxes(heatmap, 0, 2)
-    print(h.shape)
-    #print(h)
-    cv2.imshow('heatmap1', np.hstack([h[:,:,i] for i in range(5)]))
-    #cv2.imshow('heatmap2', np.array(h)[:,:,1])
-    #cv2.imshow('heatmap3', np.array(h)[:,:,2])
-    #cv2.imshow('heatmap4', np.array(h)[:,:,3])
-    #cv2.imshow('heatmap5', np.array(h)[:,:,4])
-    cv2.waitKey()
-    input("Press Enter heat to continue...")
-
-    print("State #" + str(state.number))
-    print("Game variables: ", state.game_variables)
-    print("Action:", last_action)
-    print("Reward:", reward)
-    print("=====================")
+        print("State #" + str(state.number))
+        print("Game variables: ", state.game_variables)
+        print("Action:", last_action)
+        print("Reward:", reward)
+        print("=====================")
 
     print("Episode finished!")
     print("Total reward:", game.get_total_reward())
     print("************************")
-    #sleep(2.0)
-    input("Press Enter to continue...")
+    sleep(2.0)
 
 game.close()

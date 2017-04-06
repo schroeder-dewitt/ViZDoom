@@ -190,6 +190,8 @@ namespace vizdoom {
 
     void DoomGame::updateState() {
 
+        //std::cout << "DGus0" << std::endl;
+
         /* Update reward */
         double reward = 0;
         double mapReward = doomFixedToDouble(this->doomController->getMapReward());
@@ -204,6 +206,8 @@ namespace vizdoom {
 
         this->lastMapTic = this->doomController->getMapTic();
 
+        //std::cout << "DGus1" << std::endl;
+
         /* Update state */
         if (!this->isEpisodeFinished()) {
             this->state = std::make_shared<GameState>();
@@ -217,22 +221,28 @@ namespace vizdoom {
                 this->state->gameVariables[i] =
                         this->doomController->getGameVariable(this->availableGameVariables[i]);
             }
+            //std::cout << "DGus1a" << std::endl;
 
             /* Update buffers */
             int channels = this->getScreenChannels();
             int width = this->getScreenWidth();
             int height = this->getScreenHeight();
 
+            //std::cout << "DGus1b" << std::endl;
+
             size_t graySize = static_cast<size_t>(width * height);
             size_t colorSize = graySize * channels;
 
             uint8_t *buf = this->doomController->getScreenBuffer();
+            //std::cout << "buf: " << buf << std::endl;
             this->state->screenBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
 
             if (this->doomController->isDepthBufferEnabled()) {
                 buf = this->doomController->getDepthBuffer();
                 this->state->depthBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + graySize);
             } else this->state->depthBuffer = nullptr;
+
+            //std::cout << "DGus1c" << std::endl;
 
             if (this->doomController->isLabelsEnabled()) {
                 buf = this->doomController->getLabelsBuffer();
@@ -244,9 +254,22 @@ namespace vizdoom {
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
             } else this->state->automapBuffer = nullptr;
 
+            //std::cout << "DGus1d" << std::endl;
             /* Update Heat Map (always on, might want TODO flag)*/
-            buf = this->doomController->getHeatMaps();
-            this->state->heatmaps = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+
+            buf = this->doomController->getHeatmapBuffer();
+            size_t heatmapSize = static_cast<size_t>(this->doomController->heatMapsWidth*
+                          this->doomController->heatMapsHeight* this->doomController->heatMapsChannels * sizeof(float)) ;
+            //std::cout<<this->doomController->heatMapsWidth<<"|"<<this->doomController->heatMapsHeight<<"|"<<this->doomController->heatMapsChannels<<"|"<<sizeof(float)<<std::endl;
+            //std::cout << "DGus1e: " << heatmapSize << " | " << std::endl;
+            this->state->heatmapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + heatmapSize);
+            //auto buf2 = this->doomController->getHeatMaps();
+            //this->state->heatmaps = std::make_shared<std::vector<uint8_t>>(buf2, buf2 + heatmapSize);
+            //std::cout << "DGus1e: "<< buf << " - " << colorSize << std::endl;
+            //this->state->heatmaps = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
+            // = this->doomController.heatmapBuffer;
+
+            //std::cout << "DGus2" << std::endl;
 
             /* Update labels */
             this->state->labels.clear();
@@ -262,10 +285,13 @@ namespace vizdoom {
             }
         } else this->state = nullptr;
 
+        //std::cout << "DGus3" << std::endl;
+
         /* Update last action */
         for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
             this->lastAction[i] = this->doomController->getButtonState(this->availableButtons[i]);
         }
+        //std::cout << "DGus4" << std::endl;
     }
 
     std::shared_ptr<GameState> DoomGame::getState() { return this->state; }
@@ -553,7 +579,7 @@ namespace vizdoom {
     int DoomGame::getHeatMapsHeight() { return this->doomController->getHeatMapsHeight(); }
     int DoomGame::getHeatMapsWidth() { return this->doomController->getHeatMapsWidth(); }
     BufferPtr const DoomGame::getHeatMapsRaw(){
-        return this->state->heatmaps;
+        return this->state->heatmapBuffer;
     }
 
     int DoomGame::getWallCount(){

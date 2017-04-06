@@ -152,10 +152,19 @@ def plot_map(game, partial_walls=False, only_visible_things=False):
         item = obj_list.pop()
         item.undraw()
 
+    f = open("types.txt", "w")
+
+    dict_array = {}
+
     # Add the new things
     thing_count = game.get_thing_count()
     for j in range(0, thing_count):
         thingName = game.get_thing_name(j)
+        thingType = game.get_thing_type(j)
+        if thingName not in dict_array:
+            dict_array[thingName] = thingType
+            #print("Name: "+str(thingName)+" Type: "+str(thingType))
+            f.write("Name: "+str(thingName)+" Type: "+str(thingType)+"\n")
         if only_visible_things and not game.get_thing_is_visible(j):
             # Special case for the Player that we should always display
             if thingName != "DoomPlayer":

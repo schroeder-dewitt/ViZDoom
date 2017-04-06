@@ -198,6 +198,7 @@ namespace vizdoom {
         uint8_t *const getDepthBuffer();
         uint8_t *const getLabelsBuffer();
         uint8_t *const getAutomapBuffer();
+        uint8_t *const getHeatmapBuffer();
 
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -262,6 +263,8 @@ namespace vizdoom {
         int getMapReward();
         bool isPlayerDead();
 
+        //adapted from AlbanD//
+        unsigned int heatMapsWidth, heatMapsHeight, heatMapsChannels;
 
     private:
 
@@ -333,7 +336,7 @@ namespace vizdoom {
         uint8_t *depthBuffer;
         uint8_t *automapBuffer;
         uint8_t *labelsBuffer;
-
+        uint8_t *heatmapBuffer = NULL;
 
         /* Settings */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -381,9 +384,9 @@ namespace vizdoom {
         std::vector<std::string> customArgs;
         std::vector<std::string> doomArgs;
 
-        unsigned int heatMapsWidth, heatMapsHeight, heatMapsChannels;
+
         float scaleX, scaleY, padX, padY;
-        uint8_t *heatMapsBuffer = NULL;
+        //uint8_t *heatmapBuffer = NULL;
         std::vector<bool> plottedWalls;
 
     };

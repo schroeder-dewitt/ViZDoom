@@ -35,6 +35,10 @@
 #define MAX_LABELS 256
 #define MAX_LABEL_NAME_LEN 64
 
+#define VIZDOOM_MAX_WALLS 255
+#define VIZDOOM_MAX_THINGS 1023
+#define VIZDOOM_MAX_THINGS_INFO 63
+
 namespace vizdoom {
 
     namespace b         = boost;
@@ -74,9 +78,7 @@ namespace vizdoom {
         unsigned int VERSION;
         char VERSION_STR[8];
 
-        #define VIZDOOM_MAX_WALLS 255
-        #define VIZDOOM_MAX_THINGS 1023
-        #define VIZDOOM_MAX_THINGS_INFO 63
+
 
         // SM
         size_t SM_SIZE;
