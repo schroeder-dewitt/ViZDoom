@@ -108,8 +108,15 @@ namespace vizdoom {
         imgShape[0] = getHeatMapsChannels();
         imgShape[1] = getHeatMapsHeight();
         imgShape[2] = getHeatMapsWidth();
-        PyObject *heatmap = PyArray_SimpleNewFromData(3, imgShape, NPY_UBYTE, (void*) this->state->heatmapBuffer->data());
-        return heatmap;
+        if(this->state != NULL) {
+            PyObject *heatmap = PyArray_SimpleNewFromData(3,
+                                                          imgShape,
+                                                          NPY_UBYTE,
+                                                          (void *) this->state->heatmapBuffer->data());
+            return heatmap;
+        } else{
+            return NULL;
+        }
     }
 
     bpy::list DoomGamePython::getAvailableButtons(){

@@ -48,6 +48,8 @@ game.set_mode(Mode.SPECTATOR)
 
 game.init()
 
+input("Attach GDB now!")
+
 episodes = 10
 
 for i in range(episodes):

@@ -1,0 +1,37 @@
+#0  0x00007ffff69b6d34 in vizdoom::DoomGamePython::getHeatMaps() ()
+   from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#1  0x00007ffff69c9ff6 in boost::python::objects::caller_py_function_impl<boost::python::detail::caller<_object* (vizdoom::DoomGamePython::*)(), boost::python::default_call_policies, boost::mpl::vector2<_object*, vizdoom::DoomGamePython&> > >::operator()(_object*, _object*) ()
+   from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#2  0x00007ffff653900d in boost::python::objects::function::call(_object*, _object*) const ()
+   from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#3  0x00007ffff6539208 in ?? () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#4  0x00007ffff6541263 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#5  0x00007ffff69c8f83 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::ViZDoomUnexpectedExitException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&) () from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#6  0x00007ffff6541238 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#7  0x00007ffff69c8eb3 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::ViZDoomErrorException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&)
+    () from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#8  0x00007ffff6541238 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#9  0x00007ffff69c8de3 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::ViZDoomIsNotRunningException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&) () from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#10 0x00007ffff6541238 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#11 0x00007ffff69c8d13 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::SignalException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&) ()
+   from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#12 0x00007ffff6541238 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#13 0x00007ffff69c8c43 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::SharedMemoryException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&)
+    () from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#14 0x00007ffff6541238 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#15 0x00007ffff69c8b73 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::MessageQueueException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&)
+    () from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#16 0x00007ffff6541238 in boost::python::detail::exception_handler::operator()(boost::function0<void> const&) const () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#17 0x00007ffff69c8aa3 in boost::detail::function::function_obj_invoker2<boost::_bi::bind_t<bool, boost::python::detail::translate_exception<vizdoom::FileDoesNotExistException, void (*)(std::exception const&)>, boost::_bi::list3<boost::arg<1>, boost::arg<2>, boost::_bi::value<void (*)(std::exception const&)> > >, bool, boost::python::detail::exception_handler const&, boost::function0<void> const&>::invoke(boost::detail::function::function_buffer&, boost::python::detail::exception_handler const&, boost::function0<void> const&) () from /slamdoom/libs/ViZDoom/bin/python3/pip_package/vizdoom.so
+#18 0x00007ffff654101d in boost::python::handle_exception_impl(boost::function0<void>) ()
+   from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#19 0x00007ffff6536409 in ?? () from /usr/lib/x86_64-linux-gnu/libboost_python-py35.so.1.58.0
+#20 0x00000000005b7167 in PyObject_Call ()
+#21 0x0000000000528d06 in PyEval_EvalFrameEx ()
+#22 0x000000000052d2e3 in ?? ()
+#23 0x000000000052dfdf in PyEval_EvalCode ()
+#24 0x00000000005fd2c2 in ?? ()
+#25 0x00000000005ff76a in PyRun_FileExFlags ()
+#26 0x00000000005ff95c in PyRun_SimpleFileExFlags ()
+#27 0x000000000063e7d6 in Py_Main ()
+#28 0x00000000004cfe41 in main ()
