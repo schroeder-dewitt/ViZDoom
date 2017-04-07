@@ -58,44 +58,44 @@ namespace vizdoom {
 
     bool DoomGame::init() {
         //printf("HEY!");
-        std::cout << "HEY!" << std::endl;
+        //std::cout << "HEY!" << std::endl;
 
         if (!this->isRunning()) {
 
             std::string cfgOverrideFile = "./_vizdoom.cfg";
-            std::cout << "HEY1!" << std::endl;
+            //std::cout << "HEY1!" << std::endl;
             // Printf("loaded config");
             if (fileExists(cfgOverrideFile)) loadConfig(cfgOverrideFile);
-            std::cout << "HEY2!" << std::endl;
+            //std::cout << "HEY2!" << std::endl;
             this->lastAction.resize(this->availableButtons.size());
             // Printf("last action resize");
-            std::cout << "HEY3!" << std::endl;
+            //std::cout << "HEY3!" << std::endl;
             this->doomController->setAllowDoomInput(this->mode == SPECTATOR || this->mode == ASYNC_SPECTATOR);
-            std::cout << "HEY4!" << std::endl;
+            //std::cout << "HEY4!" << std::endl;
             // Printf("set allow doom input");
             this->doomController->setRunDoomAsync(this->mode == ASYNC_PLAYER || this->mode == ASYNC_SPECTATOR);
             // Printf("set run doom async");
-            std::cout << "HEY5!" << std::endl;
+            //std::cout << "HEY5!" << std::endl;
 
             try {
                 this->running = this->doomController->init();
-                std::cout << "HEY6!" << std::endl;
+                //std::cout << "HEY6!" << std::endl;
                 //Printf("set doomController init");
 
-                std::cout << "HEY7!" << std::endl;
+                //std::cout << "HEY7!" << std::endl;
                 this->doomController->disableAllButtons();
                 // Printf("set disable all buttons");
                 for (unsigned int i = 0; i < this->availableButtons.size(); ++i) {
                     this->doomController->setButtonAvailable(this->availableButtons[i], true);
                 }
-                std::cout << "HEY8!" << std::endl;
+                //std::cout << "HEY8!" << std::endl;
                 // Printf("set button available");
 
                 this->lastMapTic = 0;
                 this->nextStateNumber = 1;
 
                 this->updateState();
-                std::cout << "HEY9!" << std::endl;
+                //std::cout << "HEY9!" << std::endl;
                 // Printf("updateState");
 
                 //this->lastMapReward = 0;

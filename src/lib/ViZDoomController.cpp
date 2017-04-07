@@ -138,41 +138,41 @@ namespace vizdoom {
 
     bool DoomController::init() {
 
-        std::cout << "HEP INIT!" << std::endl;
+        //std::cout << "HEP INIT!" << std::endl;
         if (!this->doomRunning) {
 
             try {
                 this->generateInstanceId();
-                std::cout << "HEPr INIT!" << std::endl;
+                //std::cout << "HEPr INIT!" << std::endl;
                 // Generate Doom process's arguments
                 this->createDoomArgs();
-                std::cout << "HEPda INIT!" << std::endl;
+                //std::cout << "HEPda INIT!" << std::endl;
                 // Create message queues
-                std::cout << "HEPl INIT!" << this->instanceId << std::endl;
+                //std::cout << "HEPl INIT!" << this->instanceId << std::endl;
                 this->MQDoom = new MessageQueue(MQ_DOOM_NAME_BASE + this->instanceId);
-                std::cout << "HEPo INIT!" << std::endl;
+                //std::cout << "HEPo INIT!" << std::endl;
                 this->MQController = new MessageQueue(MQ_CTR_NAME_BASE + this->instanceId);
-                std::cout << "HEPb INIT!" << std::endl;
+                //std::cout << "HEPb INIT!" << std::endl;
                 // Signal handle thread
                 this->signalThread = new b::thread(b::bind(&DoomController::handleSignals, this));
 
                 // Doom thread
                 this->doomThread = new b::thread(b::bind(&DoomController::launchDoom, this));
                 this->doomRunning = true;
-                std::cout << "HEPa INIT!" << std::endl;
+                //std::cout << "HEPa INIT!" << std::endl;
                 // Wait for first message from Doom
                 this->waitForDoomStart();
-                std::cout << "HEPz INIT!" << std::endl;
+                //std::cout << "HEPz INIT!" << std::endl;
                 // Open shared memory
                 this->SM = new SharedMemory(SM_NAME_BASE + this->instanceId);
-                std::cout << "HEP1 INIT!" << std::endl;
+                //std::cout << "HEP1 INIT!" << std::endl;
                 this->gameState = this->SM->getGameState();
                 this->input = this->SM->getInputState();
                 this->screenBuffer = this->SM->getScreenBuffer();
                 this->depthBuffer = this->SM->getDepthBuffer();
                 this->labelsBuffer = this->SM->getLabelsBuffer();
                 this->automapBuffer = this->SM->getAutomapBuffer();
-                std::cout << "HEP2 INIT!" << std::endl;
+                //std::cout << "HEP2 INIT!" << std::endl;
 
                 // Check version
                 if (this->gameState->VERSION != VIZDOOM_LIB_VERSION)
@@ -182,7 +182,7 @@ namespace vizdoom {
 
                 this->waitForDoomMapStartTime();
 
-                std::cout << "HEP3 INIT!" << std::endl;
+                //std::cout << "HEP3 INIT!" << std::endl;
                 // Update state
                 this->MQDoom->send(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
@@ -982,7 +982,7 @@ namespace vizdoom {
     int DoomController::getHeatMapsWidth() { return this->heatMapsWidth; }
 
     uint8_t * const DoomController::getHeatmapBuffer() {
-        std::cout << "HEATMAPinit"<< std::endl;
+        //std::cout << "HEATMAPinit"<< std::endl;
         if (!this->heatmapBuffer) {
             // Hard coded sizes for now
             this->heatMapsChannels = 5;
@@ -1001,7 +1001,7 @@ namespace vizdoom {
 
             // Initialize seen walls;
             this->plottedWalls = std::vector<bool>(this->gameState->WALLS_COUNT, 0);
-            std::cout << "HEATMAP0a"<< std::endl;
+            //std::cout << "HEATMAP0a"<< std::endl;
             // Initialize scaling/padding factors
             float minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
             for (int i=0; i<this->gameState->WALLS_COUNT; ++i) {
@@ -1020,23 +1020,23 @@ namespace vizdoom {
         int mapWidth = this->heatMapsWidth;
 
         // Update current buffer
-        std::cout << "getHEATMAP1: walls count: "<< this->gameState->WALLS_COUNT << std::endl;
+//        std::cout << "getHEATMAP1: walls count: "<< this->gameState->WALLS_COUNT << std::endl;
 
         // Update walls
         for (int i=0; i<this->gameState->WALLS_COUNT; ++i) {
-            std::cout << "HEATMAP1f"<< std::endl;
+            //std::cout << "HEATMAP1f"<< std::endl;
             // Add the missing ones
-            std::cout << this->gameState->WALLS_NON_BLOCKING[i] << std::endl;
-            std::cout << this->gameState->WALLS_SEEN[i] << std::endl;
-            std::cout << this->plottedWalls[i] << std::endl;
+            //std::cout << this->gameState->WALLS_NON_BLOCKING[i] << std::endl;
+            //std::cout << this->gameState->WALLS_SEEN[i] << std::endl;
+            //std::cout << this->plottedWalls[i] << std::endl;
 
             if (!this->gameState->WALLS_NON_BLOCKING[i] && this->gameState->WALLS_SEEN[i] && !this->plottedWalls[i]) {
-                std::cout << "HEATMAP1g"<< std::endl;
+                //std::cout << "HEATMAP1g"<< std::endl;
                 int fromX = this->gameState->WALLS_POS[i][0][0] * this->scaleX + this->padX;
                 int fromY = this->gameState->WALLS_POS[i][0][1] * this->scaleY + this->padY;
                 int toX = this->gameState->WALLS_POS[i][1][0] * this->scaleX + this->padX;
                 int toY = this->gameState->WALLS_POS[i][1][1] * this->scaleY + this->padY;
-                std::cout << "HEATMAP2"<< std::endl;
+                //std::cout << "HEATMAP2"<< std::endl;
                 float slope;
                 if (toX != fromX) {
                     slope = float(toY - fromY) / float(toX - fromX);
@@ -1057,7 +1057,7 @@ namespace vizdoom {
                         this->heatmapBuffer[int(Y)*mapWidth + X] = 255;
                     }
                 }
-                std::cout << "HEATMAP2a"<< std::endl;
+                //std::cout << "HEATMAP2a"<< std::endl;
                 if (toY != fromY) {
                     slope = float(toX - fromX) / float(toY - fromY);
                     float X;
@@ -1079,10 +1079,10 @@ namespace vizdoom {
                 }
                 this->plottedWalls[i] = 1;
             }
-            std::cout << "HEATMAP1ff"<< std::endl;
+            //std::cout << "HEATMAP1ff"<< std::endl;
         }
 
-        std::cout << "HEATMAP2b"<< std::endl;
+        //std::cout << "HEATMAP2b"<< std::endl;
 
         // Set everything else to black
         memset(this->heatmapBuffer+mapSize, 0, 4*mapSize);
@@ -1101,7 +1101,7 @@ namespace vizdoom {
             }
         }
 
-        std::cout << "HEATMAP2c"<< std::endl;
+        //std::cout << "HEATMAP2c"<< std::endl;
 
         if (found) {
             int centerValue = 255;
