@@ -1137,32 +1137,99 @@ namespace vizdoom {
             std::cout << "WARNING: Player not found on the map\n" << std::endl;
         }
 
-        // std::cout << "HEATMAP2d"<< std::endl;
-
-        // Update the medkits, ammo/weapons and enemies
-        for(int i=0; i<this->gameState->THINGS_COUNT; ++i) {
+            // Update the medkits, ammo/weapons and enemies
+            for(int i=0; i<this->gameState->THINGS_COUNT; ++i) {
             if (!this->gameState->THINGS_VISIBLE[i]) {
                 continue;
             }
-            int type = this->gameState->THINGS_TYPE[i];
+
+            std::string name = std::string(this->gameState->THINGS_NAME[i]);
+
+            const char* weapons[] = {"Chaingun",
+                                     "RocketLauncher",
+                                     "SuperShotgun",
+                                     "PlasmaRifle",
+                                     "Chainsaw",
+                                     "Shotgun",
+                                     "BFG9000",
+                                     "Pistol",
+                                     "Clip",
+                                     "Shell",
+                                     "ClipBox",
+                                     "ShellBox",
+                                     "RocketBox",
+                                     "Rocket"};
+            std::vector<std::string> v(weapons, weapons + 14);
+
+            const char* health_armor[] = {"BlueArmor",
+                                          "GreenArmor",
+                                          "ArmorBonus",
+                                          "Stimpack",
+                                          "Medikit",
+                                          "HealthBonus",
+                                          "Megasphere",
+                                          "Soulsphere",
+                                          "HealthBonus",
+                                          "InvulnerabilitySphere",
+                                          "Berserk",
+                                          "BlurSphere",
+                                          "RadSuit"};
+            std::vector<std::string> v(weapons, weapons + 13);
+
+            const char* enemies[] = {"ShotgunGuy",
+                                     "Zombieman",
+                                     "MarineChainsaw",
+                                     "HellKnight",
+                                     "Demon",
+                                     "ChaingunGuy",
+                                     "Cyberdemon",
+                                     "LiveStick",
+                                     "Archvile",
+                                     "Revenant",
+                                     "Fatso",
+                                     "Arachnotron",
+                                     "HellKnight",
+                                     "PainElemental",
+                                     "CommanderKeen",
+                                     "BurningBarrel",
+                                     "WolfensteinSS",
+                                     "DoomImp",
+                                     "BaronOfHell",
+                                     "Cacodemon",
+                                     "LostSoul",
+                                     "StealthArachnotron",
+                                     "StealthArchvile",
+                                     "StealthBaron",
+                                     "StealthCacodemon",
+                                     "StealthChaingunGuy",
+                                     "StealthDemon",
+                                     "StealthHellKnight",
+                                     "StealthDoomImp",
+                                     "StealthFatso",
+                                     "StealthRevenant",
+                                     "StealthShotgunGuy",
+                                     "StealthZombieMan",
+                                     "ScriptedMarine",
+                                     "MarineFirst",
+                                     "MarineBerserk",
+                                     "MarineChainsaw",
+                                     "MarinePistol",
+                                     "MarineShotgun",
+                                     "MarineSSG",
+                                     "MarineChaingun",
+                                     "MarineRocket",
+                                     "MarinePlasma",
+                                     "MarineRailgun",
+                                     "MarineBFG"};
+            std::vector<std::string> v(enemies, enemies + 45);
+
             int mapNb = -1;
             //if (type == 2061 or type == 2060 or type == 2062 or type == 2063) {
-            if (type == 2083 // Medikit
-                or type == 2084 // HealthBonus
-                ){
+            if (std::find(weapons.begin(), weapons.end(), name)){
                 mapNb = 2; // medkits
-            //} else if (type == 2076 or type == 2077 or type == 2075 or type == 1992 or type == 174 or type == 2057 or type == 2050 or type == 2058 or type == 178) {
-            } else if (type == 2076
-                       or type == 2077
-                       or type == 2075
-                       or type == 1992
-                       or type == 174
-                       or type == 2057
-                       or type == 2050
-                       or type == 2058
-                       or type == 178) {
+            } else if (std::find(health_armor.begin(), health_armor.end(), name)) {
                 mapNb = 3; // ammo/weapons
-            } else if (type == 1974 or type == 1976 or type == 1975 or type == 1433 or type == 67 or type == 1978 or type == 1977 or type == 1980) {
+            } else if (std::find(enemies.begin(), enemies.end(), name)) {
                 mapNb = 4; // enemies
             } else {
                 continue;
