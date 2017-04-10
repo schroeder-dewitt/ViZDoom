@@ -1145,7 +1145,7 @@ namespace vizdoom {
 
             std::string name = std::string(this->gameState->THINGS_NAME[i]);
 
-            const char* weapons[] = {"Chaingun",
+            const char* weapons_ch[] = {"Chaingun",
                                      "RocketLauncher",
                                      "SuperShotgun",
                                      "PlasmaRifle",
@@ -1159,9 +1159,9 @@ namespace vizdoom {
                                      "ShellBox",
                                      "RocketBox",
                                      "Rocket"};
-            std::vector<std::string> v(weapons, weapons + 14);
+            std::vector<std::string> weapons(weapons_ch, weapons_ch + 14);
 
-            const char* health_armor[] = {"BlueArmor",
+            const char* health_armor_ch[] = {"BlueArmor",
                                           "GreenArmor",
                                           "ArmorBonus",
                                           "Stimpack",
@@ -1174,9 +1174,9 @@ namespace vizdoom {
                                           "Berserk",
                                           "BlurSphere",
                                           "RadSuit"};
-            std::vector<std::string> v(weapons, weapons + 13);
+            std::vector<std::string> health_armor(health_armor_ch, health_armor_ch + 13);
 
-            const char* enemies[] = {"ShotgunGuy",
+            const char* enemies_ch[] = {"ShotgunGuy",
                                      "Zombieman",
                                      "MarineChainsaw",
                                      "HellKnight",
@@ -1221,15 +1221,15 @@ namespace vizdoom {
                                      "MarinePlasma",
                                      "MarineRailgun",
                                      "MarineBFG"};
-            std::vector<std::string> v(enemies, enemies + 45);
+            std::vector<std::string> enemies(enemies_ch, enemies_ch + 45);
 
             int mapNb = -1;
             //if (type == 2061 or type == 2060 or type == 2062 or type == 2063) {
-            if (std::find(weapons.begin(), weapons.end(), name)){
+            if (std::find(weapons.begin(), weapons.end(), name) != weapons.end()){
                 mapNb = 2; // medkits
-            } else if (std::find(health_armor.begin(), health_armor.end(), name)) {
+            } else if (std::find(health_armor.begin(), health_armor.end(), name) != health_armor.end()) {
                 mapNb = 3; // ammo/weapons
-            } else if (std::find(enemies.begin(), enemies.end(), name)) {
+            } else if (std::find(enemies.begin(), enemies.end(), name) != enemies.end()) {
                 mapNb = 4; // enemies
             } else {
                 continue;
