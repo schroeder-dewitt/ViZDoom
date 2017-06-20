@@ -248,4 +248,24 @@ namespace vizdoom {
 
         return boostNumpyArray;
     }
+
+    float DoomGamePython::getPlayerX(){
+        if (this->state == nullptr) return -10000;
+        return this->state->gameVariables->THINGS_POS[76][0];
+    }
+
+    float DoomGamePython::getPlayerY(){
+        if (this->state == nullptr) return -10000;
+        return this->state->gameVariables->THINGS_POS[76][1];
+    }
+
+    float DoomGamePython::getPlayerZ(){
+        if (this->state == nullptr) return -10000;
+        return this->state->gameVariables->THINGS_POS[76][2];
+    }
+
+    float DoomGamePython::getPlayerAngle(){
+        if (this->state == nullptr) return -10000;
+        return this->state->gameVariables->THINGS_ANGLE[76];
+    }
 }
