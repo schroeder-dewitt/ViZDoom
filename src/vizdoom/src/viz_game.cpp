@@ -293,6 +293,7 @@ void VIZ_GameStateTic(){
         while(t) {
             vizdoomGameVars->THINGS_POS[thingsCount][0] = FIXED2FLOAT(t->X());
             vizdoomGameVars->THINGS_POS[thingsCount][1] = FIXED2FLOAT(t->Y());
+            vizdoomGameVars->THINGS_POS[thingsCount][2] = FIXED2FLOAT(t->Z());
 
             vizdoomGameVars->THINGS_ANGLE[thingsCount] = float((double)t->angle / (double)(1u << 31) * (double)180.0);
 

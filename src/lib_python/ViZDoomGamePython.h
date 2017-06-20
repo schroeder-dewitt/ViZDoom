@@ -103,6 +103,12 @@ namespace vizdoom {
 
         PyObject* getHeatMaps();
 
+        float getPlayerX();
+        float getPlayerY();
+        float getPlayerZ();
+        float getPlayerAngle();
+
+
     private:
         GameStatePython* pyState;
 
