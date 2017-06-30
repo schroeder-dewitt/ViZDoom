@@ -981,6 +981,13 @@ namespace vizdoom {
     int DoomController::getHeatMapsHeight() { return this->heatMapsHeight; }
     int DoomController::getHeatMapsWidth() { return this->heatMapsWidth; }
 
+    void DoomController::resetHeatMaps() {
+        this->heatmapBuffer = NULL;
+        for (int i=0; i<this->gameState->WALLS_COUNT; i++){
+            this->gameState->WALLS_SEEN[i] = false;
+        }
+    }
+
     uint8_t * const DoomController::getHeatmapBuffer() {
         //std::cout << "HEATMAPinit"<< std::endl;
         if (!this->heatmapBuffer) {

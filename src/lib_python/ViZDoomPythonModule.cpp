@@ -434,6 +434,7 @@ BOOST_PYTHON_MODULE(vizdoom)
 
         // Our custom stuff
         .def("get_heat_maps", &DoomGamePython::getHeatMaps)
+        .def("reset_heat_maps", &DoomGamePython::resetHeatMaps)
 
         .def("get_wall_count", &DoomGamePython::getWallCount)
         .def("get_wall_start_pos_x", &DoomGamePython::getWallPosStartX)

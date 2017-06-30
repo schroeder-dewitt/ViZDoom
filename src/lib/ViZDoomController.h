@@ -213,6 +213,7 @@ namespace vizdoom {
         int getHeatMapsHeight();
         int getHeatMapsWidth();
         uint8_t * const getHeatMaps();
+        void resetHeatMaps();
 
         int getWallCount();
         float getWallPosStartX(int wallId);
