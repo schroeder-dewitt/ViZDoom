@@ -259,8 +259,8 @@ newP        if (this->doomController->isPlayerDead()) reward -= this->deathPenal
 
             if (this->resetHeatmaps){
                     this->doomController->heatmapBuffer = NULL;
-                    for (int i=0; i<this->gameState->WALLS_COUNT; ++i){
-                        this->gameState->WALLS_SEEN[i] = false;
+                    for (int i=0; i<this->state->WALLS_COUNT; ++i){
+                        this->state->WALLS_SEEN[i] = false;
                     }
             }
             buf = this->doomController->getHeatmapBuffer();
