@@ -104,7 +104,7 @@ namespace vizdoom {
     }
 
     void DoomGamePython::resetHeatMaps() {
-        //resetHeatMaps();
+        resetHeatMaps();
     }
 
 
