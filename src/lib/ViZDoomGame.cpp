@@ -167,16 +167,16 @@ namespace vizdoom {
         this->lastReward = 0;
         this->summaryReward = 0;
 
-        this->resetHeatmap();
+        // this->resetHeatmap();
     }
 
-    void DoomGame::resetHeatmap(){
+    /*void DoomGame::resetHeatmap(){
         this->DoomController->heatMapsBuffer = NULL;
         for (int i=0; i<this->DoomController->gameVariables->WALLS_COUNT; i++){
             this->DoomController->gameVariables->WALLS_SEEN[i] = false;
             // this->DoomController->plottedWalls =
         }
-    }
+    }*/
 
     void DoomGame::updateState() {
 
@@ -541,7 +541,8 @@ namespace vizdoom {
     int DoomGame::getHeatMapsChannels() { return this->doomController->getHeatMapsChannels(); }
     int DoomGame::getHeatMapsHeight() { return this->doomController->getHeatMapsHeight(); }
     int DoomGame::getHeatMapsWidth() { return this->doomController->getHeatMapsWidth(); }
-    uint8_t * const DoomGame::getHeatMapsRaw(){
+
+    BufferPtr * const DoomGame::getHeatMapsRaw(){
         return this->state.heatmaps;
     }
 
