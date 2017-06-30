@@ -212,6 +212,7 @@ namespace vizdoom {
         GameStatePtr state;
 
         void resetState();
+        void resetHeatmap();
         void updateState();
 
         std::vector<GameVariable> availableGameVariables;

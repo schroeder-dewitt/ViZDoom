@@ -166,6 +166,12 @@ namespace vizdoom {
         //this->lastMapReward = 0;
         this->lastReward = 0;
         this->summaryReward = 0;
+
+        this->resetHeatmap();
+    }
+
+    void DoomGame::resetHeatmap(){
+        this->DoomController->heatMapsBuffer = NULL;
     }
 
     void DoomGame::updateState() {
