@@ -87,6 +87,7 @@ double (DoomGamePython::*makeAction_default)(bpy::list const &, unsigned int) = 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(replayEpisode_overloads, DoomGamePython::replayEpisode, 1, 2)
 void (DoomGamePython::*replayEpisode_default)(bpy::str const &, unsigned int) = &DoomGamePython::replayEpisode;
 
+
 #if PY_MAJOR_VERSION >= 3
 int
 #else
@@ -434,6 +435,7 @@ BOOST_PYTHON_MODULE(vizdoom)
 
         // Our custom stuff
         .def("get_heat_maps", &DoomGamePython::getHeatMaps)
+        .def("reset_heatmaps", &DoomGamePython::resetHeatmap)
 
         .def("get_wall_count", &DoomGamePython::getWallCount)
         .def("get_wall_start_pos_x", &DoomGamePython::getWallPosStartX)

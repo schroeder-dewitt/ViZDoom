@@ -975,6 +975,15 @@ namespace vizdoom {
     int DoomController::getHeatMapsChannels() { return this->heatMapsChannels; }
     int DoomController::getHeatMapsHeight() { return this->heatMapsHeight; }
     int DoomController::getHeatMapsWidth() { return this->heatMapsWidth; }
+
+    void DoomController::resetHeatmap(){
+        this->heatMapsBuffer = NULL;
+        for (int i=0; i<this->gameVariables->WALLS_COUNT; i++){
+            this->gameVariables->WALLS_SEEN[i] = false;
+        }
+    }
+
+
     BufferPtr * const DoomController::getHeatMaps() {
         if (!this->heatMapsBuffer) {
             // Hard coded sizes for now

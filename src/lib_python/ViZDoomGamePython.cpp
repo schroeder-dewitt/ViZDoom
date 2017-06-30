@@ -103,6 +103,10 @@ namespace vizdoom {
         return DoomGamePython::vectorToPyList(this->lastAction);
     }
 
+    void DoomGamePython::resetHeatmap() {
+        resetHeatmap();
+    }
+
     PyObject* DoomGamePython::getHeatMaps() {
         npy_intp imgShape[3];
         imgShape[0] = getHeatMapsChannels();

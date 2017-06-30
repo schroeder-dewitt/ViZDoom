@@ -172,6 +172,10 @@ namespace vizdoom {
 
     void DoomGame::resetHeatmap(){
         this->DoomController->heatMapsBuffer = NULL;
+        for (int i=0; i<this->DoomController->gameVariables->WALLS_COUNT; i++){
+            this->DoomController->gameVariables->WALLS_SEEN[i] = false;
+            // this->DoomController->plottedWalls =
+        }
     }
 
     void DoomGame::updateState() {

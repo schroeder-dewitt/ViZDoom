@@ -102,12 +102,12 @@ namespace vizdoom {
         void sendGameCommand(bpy::str const &pyCmd);
 
         PyObject* getHeatMaps();
+        void resetHeatmap();
 
         float getPlayerX();
         float getPlayerY();
         float getPlayerZ();
         float getPlayerAngle();
-
 
     private:
         GameStatePython* pyState;
