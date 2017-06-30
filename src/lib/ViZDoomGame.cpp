@@ -180,9 +180,9 @@ namespace vizdoom {
     void DoomGame::resetState() {
         this->lastMapTic = 0;
         this->nextStateNumber = 1;
-        this->resetHeatmaps = true;
+        this->isResetHeatmaps = true;
         this->updateState();
-        this->resetHeatmaps = false;
+        this->isResetHeatmaps = false;
         //this->lastMapReward = 0;
         this->lastReward = 0;
         this->summaryReward = 0;
@@ -257,7 +257,7 @@ newP        if (this->doomController->isPlayerDead()) reward -= this->deathPenal
             //std::cout << "DGus1d" << std::endl;
             /* Update Heat Map (always on, might want TODO flag)*/
 
-            if (this->resetHeatmaps){
+            if (this->isResetHeatmaps){
                     this->doomController->heatmapBuffer = NULL;
                     for (int i=0; i<this->state->WALLS_COUNT; ++i){
                         this->state->WALLS_SEEN[i] = false;

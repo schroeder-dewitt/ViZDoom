@@ -231,7 +231,7 @@ namespace vizdoom {
         double livingReward;
         double deathPenalty;
 
-        bool resetHeatmap = false;
+        bool isResetHeatmaps = false;
 
     private:
 
