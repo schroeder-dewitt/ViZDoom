@@ -234,8 +234,8 @@ namespace vizdoom {
                 this->state->automapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
             } else this->state->automapBuffer = nullptr;
 
-            /* Update Heat Map (always on, might want TODO flag)*/
-            this->state->heatmaps = this->doomController->getHeatMaps();
+            ///* Update Heat Map (always on, might want TODO flag)*/
+            //this->state->heatmaps = this->doomController->getHeatMaps();
 
             /* Update labels */
             this->state->labels.clear();
