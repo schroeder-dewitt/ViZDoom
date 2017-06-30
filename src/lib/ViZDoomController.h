@@ -89,6 +89,8 @@ namespace vizdoom {
         /* Flow control */
         /*------------------------------------------------------------------------------------------------------------*/
 
+        uint8_t *heatmapBuffer = NULL;
+
         bool init();
         void close();
         void restart();
@@ -337,7 +339,7 @@ namespace vizdoom {
         uint8_t *depthBuffer;
         uint8_t *automapBuffer;
         uint8_t *labelsBuffer;
-        uint8_t *heatmapBuffer = NULL;
+
 
         /* Settings */
         /*------------------------------------------------------------------------------------------------------------*/
