@@ -983,6 +983,7 @@ namespace vizdoom {
 
     void DoomController::resetHeatMaps() {
         this->heatmapBuffer = NULL;
+        this->heatmapBuffer=getHeatmapBuffer();
         for (int i=0; i<this->gameState->WALLS_COUNT; i++){
             this->gameState->WALLS_SEEN[i] = false;
         }
