@@ -103,7 +103,7 @@ namespace vizdoom {
         return DoomGamePython::vectorToPyList(this->lastAction);
     }
 
-    PyObject* DoomGamePython::resetHeatMaps() {
+    void DoomGamePython::resetHeatMaps() {
         resetHeatMaps();
     }
 
