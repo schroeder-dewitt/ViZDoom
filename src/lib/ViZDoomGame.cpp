@@ -542,9 +542,9 @@ namespace vizdoom {
     int DoomGame::getHeatMapsHeight() { return this->doomController->getHeatMapsHeight(); }
     int DoomGame::getHeatMapsWidth() { return this->doomController->getHeatMapsWidth(); }
 
-    BufferPtr * const DoomGame::getHeatMapsRaw(){
+    /*BufferPtr * const DoomGame::getHeatMapsRaw(){
         return this->state.heatmaps;
-    }
+    }*/
 
     int DoomGame::getWallCount(){
         return this->doomController->getWallCount();
