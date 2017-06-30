@@ -198,7 +198,7 @@ namespace vizdoom {
         reward = mapReward - this->lastMapReward;
         int liveTime = this->doomController->getMapLastTic() - this->lastMapTic;
         reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
-        if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
+newP        if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
 
         this->lastMapReward = mapReward;
         this->summaryReward += reward;
