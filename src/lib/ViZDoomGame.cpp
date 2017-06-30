@@ -257,12 +257,13 @@ namespace vizdoom {
             //std::cout << "DGus1d" << std::endl;
             /* Update Heat Map (always on, might want TODO flag)*/
 
-            if (this->isResetHeatmaps){
+            /*if (this->isResetHeatmaps){
                     this->doomController->heatmapBuffer = NULL;
                     for (int i=0; i<this->state->WALLS_COUNT; ++i){
                         this->state->WALLS_SEEN[i] = false;
                     }
-            }
+            }*/
+
             buf = this->doomController->getHeatmapBuffer();
             size_t heatmapSize = static_cast<size_t>(this->doomController->heatMapsWidth*
                           this->doomController->heatMapsHeight* this->doomController->heatMapsChannels * sizeof(float)) ;
