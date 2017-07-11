@@ -517,8 +517,8 @@ namespace vizdoom {
     }
 
     void DoomGame::setHeatMapSize(unsigned int width, unsigned int height) {
-        this->DoomController->heatMapsWidth = width;
-        this->DoomController->heatMapsHeight = height;
+        this->doomController->heatMapsWidth = width;
+        this->doomController->heatMapsHeight = height;
     }
 
     void DoomGame::setScreenFormat(ScreenFormat format) { this->doomController->setScreenFormat(format); }
