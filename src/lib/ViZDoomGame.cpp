@@ -461,11 +461,6 @@ namespace vizdoom {
     void DoomGame::setScreenResolution(ScreenResolution resolution) {
         unsigned int width = 0, height = 0;
 
-    void DoomGame::setHeatMapSize(unsigned int width, unsigned int height) {
-        this->DoomController->heatMapsWidth = width;
-        this->DoomController->heatMapsHeight = height;
-    }
-
 #define CASE_RES(w, h) case RES_##w##X##h : width = w; height = h; break;
 
         switch (resolution) {
@@ -519,6 +514,11 @@ namespace vizdoom {
             CASE_RES(1920, 1080)
         }
         this->doomController->setScreenResolution(width, height);
+    }
+
+    void DoomGame::setHeatMapSize(unsigned int width, unsigned int height) {
+        this->DoomController->heatMapsWidth = width;
+        this->DoomController->heatMapsHeight = height;
     }
 
     void DoomGame::setScreenFormat(ScreenFormat format) { this->doomController->setScreenFormat(format); }
