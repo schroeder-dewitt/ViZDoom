@@ -994,8 +994,8 @@ namespace vizdoom {
         if (!this->heatmapBuffer) {
             // Hard coded sizes for now
             this->heatMapsChannels = 5;
-            this->heatMapsHeight = 120;
-            this->heatMapsWidth = 120;
+            //this->heatMapsHeight = 120;
+            //this->heatMapsWidth = 120;
             // 0: walls
             // 1: player
             // 2: medkits

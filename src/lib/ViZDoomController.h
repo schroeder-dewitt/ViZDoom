@@ -214,6 +214,7 @@ namespace vizdoom {
         int getHeatMapsChannels();
         int getHeatMapsHeight();
         int getHeatMapsWidth();
+        void setHeatMapSize(unsigned int width, unsigned int height);
         uint8_t * const getHeatMaps();
         void resetHeatMaps();
 
@@ -267,7 +268,7 @@ namespace vizdoom {
         bool isPlayerDead();
 
         //adapted from AlbanD//
-        unsigned int heatMapsWidth, heatMapsHeight, heatMapsChannels;
+        unsigned int heatMapsWidth = 120, heatMapsHeight = 120, heatMapsChannels = 5;
 
     private:
 
