@@ -536,6 +536,7 @@ BOOST_PYTHON_MODULE(vizdoom)
         .def("get_screen_format", &DoomGamePython::getScreenFormat)
         .def("set_window_visible", &DoomGamePython::setWindowVisible)
         .def("set_heatmap_size", &DoomGamePython::setHeatMapSize);
+        .def("get_full_heatmap", &DoomGamePython::getFullHeatMap);
 
     /* Utilities */
     /*----------------------------------------------------------------------------------------------------------------*/

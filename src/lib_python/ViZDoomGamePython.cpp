@@ -124,6 +124,22 @@ namespace vizdoom {
         }
     }
 
+    PyObject* DoomGamePython::getFullHeatMaps() {
+        npy_intp imgShape[3];
+        imgShape[0] = getHeatMapsChannels();
+        imgShape[1] = getHeatMapsHeight();
+        imgShape[2] = getHeatMapsWidth();
+        if(this->state != NULL) {
+            PyObject *heatmap = PyArray_SimpleNewFromData(3,
+                                                          imgShape,
+                                                          NPY_UBYTE,
+                                                          (void *) this->state->fullHeatmapBuffer->data());
+            return heatmap;
+        } else{
+            return NULL;
+        }
+    }
+
     bpy::list DoomGamePython::getAvailableButtons(){
         return DoomGamePython::vectorToPyList(this->availableButtons);
     }

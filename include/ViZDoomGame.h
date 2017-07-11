@@ -181,6 +181,7 @@ namespace vizdoom {
         int getHeatMapsWidth();
         void setHeatMapSize(unsigned int width, unsigned int height);
         BufferPtr const getHeatMapsRaw();
+        BufferPtr const getFullHeatMapsRaw();
 
         int getWallCount();
         float getWallPosStartX(int wallId);

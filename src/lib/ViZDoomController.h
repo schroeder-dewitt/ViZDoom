@@ -90,6 +90,7 @@ namespace vizdoom {
         /*------------------------------------------------------------------------------------------------------------*/
 
         uint8_t *heatmapBuffer = NULL;
+        uint8_t *fullHeatmapBuffer = NULL;
 
         bool init();
         void close();
@@ -201,6 +202,7 @@ namespace vizdoom {
         uint8_t *const getLabelsBuffer();
         uint8_t *const getAutomapBuffer();
         uint8_t *const getHeatmapBuffer();
+        uint8_t *const getFullHeatmapBuffer();
 
         /* Buttons getters and setters */
         /*------------------------------------------------------------------------------------------------------------*/
@@ -216,7 +218,9 @@ namespace vizdoom {
         int getHeatMapsWidth();
         void setHeatMapSize(unsigned int width, unsigned int height);
         uint8_t * const getHeatMaps();
+        uint8_t * const getFullHeatMaps();
         void resetHeatMaps();
+        void resetFullHeatMaps();
 
         int getWallCount();
         float getWallPosStartX(int wallId);

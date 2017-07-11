@@ -54,6 +54,7 @@ namespace vizdoom{
         BufferPtr automapBuffer;
         //BufferPtr heatmaps;
         BufferPtr heatmapBuffer;
+        BufferPtr fullHeatmapBuffer;
 
         std::vector<Label> labels;
     };

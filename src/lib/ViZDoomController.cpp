@@ -989,6 +989,14 @@ namespace vizdoom {
         }
     }
 
+    void DoomController::resetFullHeatMaps() {
+        //this->heatmapBuffer = NULL;
+        //this->heatmapBuffer=getHeatmapBuffer();
+        for (int i=0; i<this->gameState->WALLS_COUNT; ++i){
+            this->gameState->WALLS_SEEN[i] = false;
+        }
+    }
+
     uint8_t * const DoomController::getHeatmapBuffer() {
         //std::cout << "HEATMAPinit"<< std::endl;
         if (!this->heatmapBuffer) {
@@ -1253,6 +1261,273 @@ namespace vizdoom {
         // std::cout << "HEATMAP2e"<< std::endl;
 
         return this->heatmapBuffer;
+    }
+
+
+   uint8_t * const DoomController::getFullHeatmapBuffer() {
+        //std::cout << "HEATMAPinit"<< std::endl;
+        if (!this->fullHeatmapBuffer) {
+            // Hard coded sizes for now
+            this->heatMapsChannels = 5;
+            //this->heatMapsHeight = 120;
+            //this->heatMapsWidth = 120;
+            // 0: walls
+            // 1: player
+            // 2: medkits
+            // 3: ammo/weapons
+            // 4: enemies
+
+            // Initialize map
+            int heatMapsSize = this->heatMapsWidth*this->heatMapsHeight*this->heatMapsChannels;
+            this->fullHeatmapBuffer = (uint8_t*) malloc(heatMapsSize*sizeof(float));
+            memset(this->fullHeatmapBuffer, 0, heatMapsSize);
+
+            // Initialize seen walls;
+            this->plottedWalls = std::vector<bool>(this->gameState->WALLS_COUNT, 0);
+            //std::cout << "HEATMAP0a"<< std::endl;
+            // Initialize scaling/padding factors
+            float minX=1e9, minY=1e9, maxX=-1e9, maxY=-1e9;
+            for (int i=0; i<this->gameState->WALLS_COUNT; ++i) {
+                minX = std::min(minX, std::min(this->gameState->WALLS_POS[i][0][0], this->gameState->WALLS_POS[i][1][0]));
+                minY = std::min(minY, std::min(this->gameState->WALLS_POS[i][0][1], this->gameState->WALLS_POS[i][1][1]));
+                maxX = std::max(maxX, std::max(this->gameState->WALLS_POS[i][0][0], this->gameState->WALLS_POS[i][1][0]));
+                maxY = std::max(maxY, std::max(this->gameState->WALLS_POS[i][0][1], this->gameState->WALLS_POS[i][1][1]));
+            }
+            // Keep 4 pixels all around
+            this->scaleX = - float(this->heatMapsWidth-4) / float(maxX - minX);
+            this->scaleY = float(this->heatMapsHeight-4) / float(maxY - minY);
+            this->padX = -2 - minX * this->scaleX + this->heatMapsWidth;
+            this->padY = 2 - minY * this->scaleY;
+        }
+        int mapSize = this->heatMapsWidth * this->heatMapsHeight;
+        int mapWidth = this->heatMapsWidth;
+
+        // Update current buffer
+//        std::cout << "getHEATMAP1: walls count: "<< this->gameState->WALLS_COUNT << std::endl;
+
+        // Update walls
+        for (int i=0; i<this->gameState->WALLS_COUNT; ++i) {
+            //std::cout << "HEATMAP1f"<< std::endl;
+            // Add the missing ones
+            //std::cout << this->gameState->WALLS_NON_BLOCKING[i] << std::endl;
+            //std::cout << this->gameState->WALLS_SEEN[i] << std::endl;
+            //std::cout << this->plottedWalls[i] << std::endl;
+
+            if (!this->gameState->WALLS_NON_BLOCKING[i]  && !this->plottedWalls[i]) { // && this->gameState->WALLS_SEEN[i]
+                //std::cout << "HEATMAP1g"<< std::endl;
+                int fromX = this->gameState->WALLS_POS[i][0][0] * this->scaleX + this->padX;
+                int fromY = this->gameState->WALLS_POS[i][0][1] * this->scaleY + this->padY;
+                int toX = this->gameState->WALLS_POS[i][1][0] * this->scaleX + this->padX;
+                int toY = this->gameState->WALLS_POS[i][1][1] * this->scaleY + this->padY;
+                //std::cout << "HEATMAP2"<< std::endl;
+                float slope;
+                if (toX != fromX) {
+                    slope = float(toY - fromY) / float(toX - fromX);
+                    float Y;
+                    int from, to;
+                    if (fromX < toX) {
+                        from = fromX;
+                        to = toX;
+                        Y = float(fromY);
+                    } else {
+                        from = toX;
+                        to = fromX;
+                        Y = float(toY);
+                    }
+                    for (int X = from; X <= to; ++X) {
+                        Y += slope;
+                        Y = std::min(std::max(Y, 0.f), (float)this->heatMapsHeight);
+                        this->fullHeatmapBuffer[int(Y)*mapWidth + X] = 255;
+                    }
+                }
+                //std::cout << "HEATMAP2a"<< std::endl;
+                if (toY != fromY) {
+                    slope = float(toX - fromX) / float(toY - fromY);
+                    float X;
+                    int from, to;
+                    if (fromY < toY) {
+                        from = fromY;
+                        to = toY;
+                        X = float(fromX);
+                    } else {
+                        from = toY;
+                        to = fromY;
+                        X = float(toX);
+                    }
+                    for (int Y = from; Y <= to; ++Y) {
+                        X += slope;
+                        X = std::min(std::max(X, 0.f), (float)this->heatMapsWidth);
+                        this->fullHeatmapBuffer[Y*mapWidth + int(X)] = 255;
+                    }
+                }
+                this->plottedWalls[i] = 1;
+            }
+            //std::cout << "HEATMAP1ff"<< std::endl;
+        }
+
+        //std::cout << "HEATMAP2b"<< std::endl;
+
+        // Set everything else to black
+        memset(this->fullHeatmapBuffer+mapSize, 0, 4*mapSize);
+
+        // Update the player
+        float playerAngle = 0;
+        int playerX, playerY;
+        bool found = 0;
+        for(int i=0; i<this->gameState->THINGS_COUNT; ++i) {
+            if (this->gameState->THINGS_TYPE[i] == 76) {
+                playerX = this->gameState->THINGS_POS[i][0] * this->scaleX + this->padX;
+                playerY = this->gameState->THINGS_POS[i][1] * this->scaleY + this->padY;
+                playerAngle = this->gameState->THINGS_ANGLE[i];
+                found = 1;
+                break;
+            }
+        }
+
+        //std::cout << "HEATMAP2c"<< std::endl;
+
+        if (found) {
+            int centerValue = 255;
+            int arrowValue = 125;
+            this->fullHeatmapBuffer[mapSize + playerY*mapWidth + playerX] = centerValue;
+            playerAngle = int(360 - playerAngle + 180) % 360;
+            if (playerAngle < 22.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY+0)*mapWidth + playerX+1] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY+0)*mapWidth + playerX+2] = arrowValue;
+            } else if (playerAngle < 67.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY+1)*mapWidth + playerX+1] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY+2)*mapWidth + playerX+2] = arrowValue;
+            } else if (playerAngle < 112.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY+1)*mapWidth + playerX+0] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY+2)*mapWidth + playerX+0] = arrowValue;
+            } else if (playerAngle < 157.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY+1)*mapWidth + playerX-1] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY+2)*mapWidth + playerX-2] = arrowValue;
+            } else if (playerAngle < 202.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY+0)*mapWidth + playerX-1] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY+0)*mapWidth + playerX-2] = arrowValue;
+            } else if (playerAngle < 247.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY-1)*mapWidth + playerX-1] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY-2)*mapWidth + playerX-2] = arrowValue;
+            } else if (playerAngle < 292.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY-1)*mapWidth + playerX+0] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY-2)*mapWidth + playerX+0] = arrowValue;
+            } else if (playerAngle < 337.5) {
+                this->fullHeatmapBuffer[mapSize + (playerY-1)*mapWidth + playerX+1] = arrowValue;
+                this->fullHeatmapBuffer[mapSize + (playerY-2)*mapWidth + playerX+2] = arrowValue;
+            }
+        } else {
+            std::cout << "WARNING: Player not found on the map\n" << std::endl;
+        }
+
+            // Update the medkits, ammo/weapons and enemies
+            for(int i=0; i<this->gameState->THINGS_COUNT; ++i) {
+            //if (!this->gameState->THINGS_VISIBLE[i]) {
+            //    continue;
+            //}
+
+            std::string name = std::string(this->gameState->THINGS_NAME[i]);
+
+            const char* weapons_ch[] = {"Chaingun",
+                                     "RocketLauncher",
+                                     "SuperShotgun",
+                                     "PlasmaRifle",
+                                     "Chainsaw",
+                                     "Shotgun",
+                                     "BFG9000",
+                                     "Pistol",
+                                     "Clip",
+                                     "Shell",
+                                     "ClipBox",
+                                     "ShellBox",
+                                     "RocketBox",
+                                     "Rocket"};
+            std::vector<std::string> weapons(weapons_ch, weapons_ch + 14);
+
+            const char* health_armor_ch[] = {"BlueArmor",
+                                          "GreenArmor",
+                                          "ArmorBonus",
+                                          "Stimpack",
+                                          "Medikit",
+                                          "HealthBonus",
+                                          "Megasphere",
+                                          "Soulsphere",
+                                          "HealthBonus",
+                                          "InvulnerabilitySphere",
+                                          "Berserk",
+                                          "BlurSphere",
+                                          "RadSuit"};
+            std::vector<std::string> health_armor(health_armor_ch, health_armor_ch + 13);
+
+            const char* enemies_ch[] = {"ShotgunGuy",
+                                     "Zombieman",
+                                     "MarineChainsaw",
+                                     "HellKnight",
+                                     "Demon",
+                                     "ChaingunGuy",
+                                     "Cyberdemon",
+                                     "LiveStick",
+                                     "Archvile",
+                                     "Revenant",
+                                     "Fatso",
+                                     "Arachnotron",
+                                     "HellKnight",
+                                     "PainElemental",
+                                     "CommanderKeen",
+                                     "BurningBarrel",
+                                     "WolfensteinSS",
+                                     "DoomImp",
+                                     "BaronOfHell",
+                                     "Cacodemon",
+                                     "LostSoul",
+                                     "StealthArachnotron",
+                                     "StealthArchvile",
+                                     "StealthBaron",
+                                     "StealthCacodemon",
+                                     "StealthChaingunGuy",
+                                     "StealthDemon",
+                                     "StealthHellKnight",
+                                     "StealthDoomImp",
+                                     "StealthFatso",
+                                     "StealthRevenant",
+                                     "StealthShotgunGuy",
+                                     "StealthZombieMan",
+                                     "ScriptedMarine",
+                                     "MarineFirst",
+                                     "MarineBerserk",
+                                     "MarineChainsaw",
+                                     "MarinePistol",
+                                     "MarineShotgun",
+                                     "MarineSSG",
+                                     "MarineChaingun",
+                                     "MarineRocket",
+                                     "MarinePlasma",
+                                     "MarineRailgun",
+                                     "MarineBFG"};
+            std::vector<std::string> enemies(enemies_ch, enemies_ch + 45);
+
+            int mapNb = -1;
+            //if (type == 2061 or type == 2060 or type == 2062 or type == 2063) {
+            if (std::find(weapons.begin(), weapons.end(), name) != weapons.end()){
+                mapNb = 2; // medkits
+            } else if (std::find(health_armor.begin(), health_armor.end(), name) != health_armor.end()) {
+                mapNb = 3; // ammo/weapons
+            } else if (std::find(enemies.begin(), enemies.end(), name) != enemies.end()) {
+                mapNb = 4; // enemies
+            } else {
+                continue;
+            }
+            int posX = this->gameState->THINGS_POS[i][0] * this->scaleX + this->padX;
+            int posY = this->gameState->THINGS_POS[i][1] * this->scaleY + this->padY;
+            for (int x=-1; x < 2; ++x) {
+                for (int y=-1; y < 2; ++y) {
+                    this->fullHeatmapBuffer[mapNb*mapSize + (posY+y)*mapWidth + posX+x] = 255;
+                }
+            }
+        }
+        // std::cout << "HEATMAP2e"<< std::endl;
+
+        return this->fullHeatmapBuffer;
     }
 
     // End of our custom stuff

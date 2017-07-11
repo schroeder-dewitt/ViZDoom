@@ -276,6 +276,13 @@ namespace vizdoom {
             //this->state->heatmaps = std::make_shared<std::vector<uint8_t>>(buf, buf + colorSize);
             // = this->doomController.heatmapBuffer;
 
+            buf = this->doomController->getFullHeatmapBuffer();
+            size_t fullHeatmapSize = static_cast<size_t>(this->doomController->heatMapsWidth*
+                          this->doomController->heatMapsHeight* this->doomController->heatMapsChannels * sizeof(float)) ;
+            //std::cout<<this->doomController->heatMapsWidth<<"|"<<this->doomController->heatMapsHeight<<"|"<<this->doomController->heatMapsChannels<<"|"<<sizeof(float)<<std::endl;
+            //std::cout << "DGus1e: " << heatmapSize << " | " << std::endl;
+            this->state->fullHeatmapBuffer = std::make_shared<std::vector<uint8_t>>(buf, buf + fullHeatmapSize);
+
             //std::cout << "DGus2" << std::endl;
 
             /* Update labels */
@@ -590,8 +597,13 @@ namespace vizdoom {
     int DoomGame::getHeatMapsChannels() { return this->doomController->getHeatMapsChannels(); }
     int DoomGame::getHeatMapsHeight() { return this->doomController->getHeatMapsHeight(); }
     int DoomGame::getHeatMapsWidth() { return this->doomController->getHeatMapsWidth(); }
+
     BufferPtr const DoomGame::getHeatMapsRaw(){
         return this->state->heatmapBuffer;
+    }
+
+    BufferPtr const DoomGame::getFullHeatMapsRaw(){
+        return this->state->fullHeatmapBuffer;
     }
 
     int DoomGame::getWallCount(){
