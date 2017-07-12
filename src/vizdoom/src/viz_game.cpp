@@ -281,6 +281,7 @@ void VIZ_GameStateTic(){
             nonBlocking |= lines[i].backsector->floorplane != lines[i].frontsector->floorplane;
             nonBlocking |= lines[i].backsector->ceilingplane != lines[i].frontsector->ceilingplane;
             nonBlocking |= lines[i].flags&(ML_BLOCKING | ML_BLOCKEVERYTHING | ML_BLOCK_PLAYERS);
+            nonBlocking |= !(lines[i].backsector == NULL && lines[i].frontsector == NULL);
         }
         vizGameStateSM->WALLS_NON_BLOCKING[i] = nonBlocking;
 
